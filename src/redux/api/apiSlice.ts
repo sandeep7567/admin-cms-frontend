@@ -16,7 +16,6 @@ export const apiSlice = createApi({
       async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data);
           dispatch(
             getUser({
               user: data?.user,

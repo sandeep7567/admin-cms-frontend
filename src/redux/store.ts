@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./api/apiSlice";
 import authSlice from "./reducer/authSlice";
+import storeSlice from "./reducer/storeSlice";
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authSlice,
+    store: storeSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([apiSlice.middleware]),
@@ -29,7 +31,6 @@ const initializeApp = async () => {
       );
 
       if (isError && error && "status" in error && error.status === 401) {
-        console.log(error);
         await store.dispatch(
           apiSlice.endpoints.logout.initiate(
             {},
