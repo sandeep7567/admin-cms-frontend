@@ -11,6 +11,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ["Auth"],
     }),
     login: builder.mutation<MessageResponse, LoginCredentials>({
       query: (data) => ({
@@ -19,6 +20,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ["Auth"],
     }),
   }),
 });

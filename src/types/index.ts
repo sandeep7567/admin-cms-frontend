@@ -15,7 +15,7 @@ export type User = {
   firstName: string;
   lastName: string;
   createdAt: string;
-  storeId: string | null;
+  storeId: string[] | null;
 };
 
 export type CreateUserData = {
