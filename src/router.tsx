@@ -4,6 +4,8 @@ import NonAuth from "./layouts/NonAuth";
 import Root from "./layouts/Root";
 import HomePage from "./pages/HomePage";
 import Auth from "./components/authentication/Auth";
+import SetupPage from "./pages/setup/SetupPage";
+import Setup from "./layouts/Setup";
 
 export const router = createBrowserRouter([
   {
@@ -12,14 +14,20 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Dashboard />,
+        element: <Setup />,
         children: [
           {
             path: "",
-            element: <HomePage />,
+            element: <SetupPage />,
           },
+        ],
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+        children: [
           {
-            path: "/:storeId",
+            path: ":storeId",
             element: <HomePage />,
           },
         ],
