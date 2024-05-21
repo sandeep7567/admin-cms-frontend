@@ -18,9 +18,27 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 const initializeApp = async () => {
-  await store.dispatch(
+  const { isError, error } = await store.dispatch(
     apiSlice.endpoints.getUser.initiate({}, { forceRefetch: true })
   );
+
+  if (isError && error && "status" in error && error.status === 401) {
+    {
+      const { isError, error } = await store.dispatch(
+        apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true })
+      );
+
+      if (isError && error && "status" in error && error.status === 401) {
+        console.log(error);
+        await store.dispatch(
+          apiSlice.endpoints.logout.initiate(
+            {},
+            { fixedCacheKey: "Auth", track: true }
+          )
+        );
+      }
+    }
+  }
 };
 
 initializeApp();

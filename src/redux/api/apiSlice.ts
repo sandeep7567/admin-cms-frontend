@@ -21,10 +21,25 @@ export const apiSlice = createApi({
           console.error(error);
         }
       },
-      providesTags: ["User"],
+      providesTags: ["Auth"],
       keepUnusedDataFor: 5,
+    }),
+    refreshToken: builder.query({
+      query: () => ({
+        url: "auth/refresh",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "auth/logout",
+        method: "POST",
+        credentials: "include" as const,
+      }),
     }),
   }),
 });
 
-export const { useGetUserQuery } = apiSlice;
+export const { useGetUserQuery, useRefreshTokenQuery, useLogoutMutation } =
+  apiSlice;

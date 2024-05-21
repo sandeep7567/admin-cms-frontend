@@ -1,5 +1,5 @@
 import { Form } from "@/components/ui/form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +7,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import LoginForm from "../form/LoginForm";
 import RegisterForm from "../form/RegisterForm";
+import {
+  useLoginMutation,
+  useRegistrationMutation,
+} from "@/redux/api/authApiSlice";
+import { toast } from "sonner";
 
 interface AuthProps {
   title: string;
@@ -51,6 +56,12 @@ const Auth: React.FC<AuthProps> = ({
   mode = "model",
   formType,
 }) => {
+  const navigate = useNavigate();
+  const [register, { isSuccess: isRegisterSuccesss }] =
+    useRegistrationMutation();
+
+  const [login, { isSuccess }] = useLoginMutation();
+
   // 1. Define your form.
   const loginForm = useForm<z.infer<typeof formLoginSchema>>({
     resolver: zodResolver(formLoginSchema),
@@ -70,15 +81,23 @@ const Auth: React.FC<AuthProps> = ({
     },
   });
 
-  type SubmitFormSchemaType = z.infer<
-    typeof formLoginSchema | typeof formRegisterSchema
-  >;
-
   // 2. Define a submit handler.
-  function onSubmit(values: SubmitFormSchemaType) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onRegisterSubmit(values: z.infer<typeof formRegisterSchema>) {
+    await register(values);
+
+    if (isRegisterSuccesss) {
+      toast("Register Success");
+      navigate("/");
+    }
+  }
+
+  async function onLoginSubmit(values: z.infer<typeof formLoginSchema>) {
+    await login(values);
+
+    if (isSuccess) {
+      toast("Login Success");
+      navigate("/");
+    }
   }
 
   if (mode === "model") {
@@ -104,7 +123,7 @@ const Auth: React.FC<AuthProps> = ({
             {formType === "register" && (
               <Form {...registerForm}>
                 <form
-                  onSubmit={registerForm.handleSubmit(onSubmit)}
+                  onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
                   className="grid gap-4"
                 >
                   <RegisterForm form={registerForm} />
@@ -119,7 +138,7 @@ const Auth: React.FC<AuthProps> = ({
             {formType === "login" && (
               <Form {...loginForm}>
                 <form
-                  onSubmit={loginForm.handleSubmit(onSubmit)}
+                  onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                   className="grid gap-4"
                 >
                   <LoginForm form={loginForm} />
