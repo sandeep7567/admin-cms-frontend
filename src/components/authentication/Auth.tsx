@@ -81,13 +81,15 @@ const Auth: React.FC<AuthProps> = ({
     },
   });
 
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+
   // 2. Define a submit handler.
   async function onRegisterSubmit(values: z.infer<typeof formRegisterSchema>) {
     await register(values);
 
     if (isRegisterSuccesss) {
       toast("Register Success");
-      navigate("/");
+      navigate(`${redirect}`);
     }
   }
 
@@ -96,7 +98,7 @@ const Auth: React.FC<AuthProps> = ({
 
     if (isSuccess) {
       toast("Login Success");
-      navigate("/");
+      navigate(`${redirect}`);
     }
   }
 

@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -60,6 +60,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAppSelector } from "@/hooks/redux";
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -96,16 +97,26 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 
 export interface TeamSwitcherProps extends PopoverTriggerProps {}
 
-interface DashboardI {
-  className?: TeamSwitcherProps;
-}
+const Dashboard = () => {
+  const { user } = useAppSelector((state) => state.auth);
+  const location = useLocation();
 
-const Dashboard = ({ className }: DashboardI) => {
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(
     groups[0].teams[0]
   );
+
+  if (user === null) {
+    return (
+      <Navigate to={`/auth/login?redirect=${location.pathname}`} replace />
+    );
+  }
+
+  if (user && user.storeId === null) {
+    return <Navigate to={`/`} replace />;
+  }
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[250px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -280,7 +291,7 @@ const Dashboard = ({ className }: DashboardI) => {
                   role="combobox"
                   aria-expanded={open}
                   aria-label="Select a team"
-                  className={cn("w-[200px] justify-between", className)}
+                  className={cn("w-[200px] justify-between")}
                 >
                   <Avatar className="mr-2 h-5 w-5">
                     <AvatarImage
