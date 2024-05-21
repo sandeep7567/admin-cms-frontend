@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getUser } from "../reducer/authSlice";
+import { getUser, logout } from "../reducer/authSlice";
 
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
@@ -13,12 +13,17 @@ export const apiSlice = createApi({
         method: "GET",
         credentials: "include" as const,
       }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
         try {
           const { data } = await queryFulfilled;
-          data && data?.statusCode === 200 && dispatch(getUser(data?.data));
-        } catch (error) {
-          console.error(error);
+          console.log(data);
+          dispatch(
+            getUser({
+              user: data?.user,
+            })
+          );
+        } catch (err) {
+          console.error(err);
         }
       },
       providesTags: ["Auth"],
@@ -37,6 +42,14 @@ export const apiSlice = createApi({
         method: "POST",
         credentials: "include" as const,
       }),
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled;
+          dispatch(logout());
+        } catch (err) {
+          console.error(err);
+        }
+      },
     }),
   }),
 });

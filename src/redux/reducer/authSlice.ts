@@ -1,28 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { User } from "@/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
-  data: null,
+interface AuthType {
+  user: null | User;
+}
+
+const initialState: AuthType = {
+  user: null,
 };
 
 const authSlice = createSlice({
   initialState,
   name: "user",
   reducers: {
-    registration: (state, action) => {
-      state.data = action.payload.data;
-    },
-    login: (state, action) => {
-      state.data = action.payload.data;
+    getUser: (state, action: PayloadAction<{ user: User }>) => {
+      state.user = action.payload.user;
     },
     logout: (state) => {
-      state.data = null;
-    },
-    getUser: (state, action) => {
-      state.data = action.payload.data;
+      state.user = null;
     },
   },
 });
 
-export const { registration, login, logout, getUser } = authSlice.actions;
+export const { getUser, logout } = authSlice.actions;
 
 export default authSlice.reducer;

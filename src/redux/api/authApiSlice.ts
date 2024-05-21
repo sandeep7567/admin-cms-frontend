@@ -1,6 +1,5 @@
 import { LoginCredentials, RegisterCredentials } from "@/types";
 import { MessageResponse } from "@/types/api-types";
-import { login, registration } from "../reducer/authSlice";
 import { apiSlice } from "./apiSlice";
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -12,18 +11,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
-      async onQueryStarted(_, { queryFulfilled, dispatch }) {
-        try {
-          const response = await queryFulfilled;
-          dispatch(
-            registration({
-              data: response.data.id,
-            })
-          );
-        } catch (err) {
-          console.error(err);
-        }
-      },
     }),
     login: builder.mutation<MessageResponse, LoginCredentials>({
       query: (data) => ({
@@ -32,18 +19,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
-      async onQueryStarted(_, { queryFulfilled, dispatch }) {
-        try {
-          const response = await queryFulfilled;
-          dispatch(
-            login({
-              data: response.data.id,
-            })
-          );
-        } catch (err) {
-          console.error(err);
-        }
-      },
     }),
   }),
 });
