@@ -4,12 +4,12 @@ export type Credentials = {
 };
 
 export type User = {
-  id: string;
+  _id: string;
   email: string;
   firstName: string;
   lastName: string;
   createdAt: string;
-  tenant: Tenant | null;
+  store: string | null;
 };
 
 export type CreateUserData = {
