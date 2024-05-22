@@ -60,9 +60,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAppSelector } from "@/hooks/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useEffect } from "react";
+import { onClose } from "@/redux/reducer/storeSlice";
 
 const groups = [
   {
@@ -100,6 +101,7 @@ export interface TeamSwitcherProps extends PopoverTriggerProps {}
 const Dashboard = () => {
   const { user } = useAppSelector((state) => state.auth);
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
@@ -107,13 +109,19 @@ const Dashboard = () => {
     groups[0].teams[0]
   );
 
+  useEffect(() => {
+    if (user && user.storeId.length > 0) {
+      dispatch(onClose());
+    }
+  }, [dispatch, user]);
+
   if (user === null) {
     return (
       <Navigate to={`/auth/login?redirect=${location.pathname}`} replace />
     );
   }
 
-  if (user && user.storeId === null) {
+  if (user && !user.storeId?.length) {
     return <Navigate to={`/`} replace />;
   }
 
