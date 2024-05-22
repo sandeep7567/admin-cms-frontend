@@ -1,21 +1,16 @@
-import { onToggle } from "@/redux/reducer/productSlice";
-import { OpenSheetButton } from "../ui/open-sheet-button";
-import { useAppDispatch } from "@/hooks/redux";
-
 interface NoDataPageProps {
   title: string;
   description: string;
   info: string;
-  btnLabel: string;
+  children: React.ReactNode;
 }
 
 const NoDataPage: React.FC<NoDataPageProps> = ({
-  btnLabel,
   description,
   info,
   title,
+  children,
 }) => {
-  const dispatch = useAppDispatch();
   return (
     <>
       <div className="flex items-center">
@@ -28,10 +23,7 @@ const NoDataPage: React.FC<NoDataPageProps> = ({
         <div className="flex flex-col items-center gap-1 text-center">
           <h3 className="text-2xl font-bold tracking-tight">{description}</h3>
           <p className="text-sm text-muted-foreground">{info}</p>
-          <OpenSheetButton
-            btnLabel={btnLabel}
-            onOpen={() => dispatch(onToggle())}
-          />
+          {children}
         </div>
       </div>
     </>

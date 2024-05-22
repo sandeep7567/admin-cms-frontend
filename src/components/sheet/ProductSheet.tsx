@@ -3,7 +3,6 @@ import { onToggle } from "@/redux/reducer/productSlice";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { SheetForm } from "../ui/sheetForm";
-import { Link } from "react-router-dom";
 
 const ProductSheet = () => {
   const { isOpen } = useAppSelector((state) => state.product);
@@ -19,8 +18,19 @@ const ProductSheet = () => {
       open={isOpen}
       onOpen={() => dispatch(onToggle())}
     >
+      {/* <Form {...registerForm}>
+        <form
+          onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
+          className="grid gap-4"
+        >
+          <RegisterForm form={registerForm} />
+
+          <Button type="submit" className="w-full">
+            {submitBtnLabel}
+          </Button>
+        </form>
+      </Form> */}
       <div className="grid gap-4 py-4">
-        <Link to={"/664de3b0b387d8905bed5c56"}>Dash</Link>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="name" className="text-right">
             Name
