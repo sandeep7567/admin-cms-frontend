@@ -15,7 +15,7 @@ export type User = {
   firstName: string;
   lastName: string;
   createdAt: string;
-  storeId: string[] | null;
+  storeId: string[];
 };
 
 export type CreateUserData = {
@@ -27,17 +27,15 @@ export type CreateUserData = {
   tenantId: number;
 };
 
-export type Tenant = {
-  id: string;
+export type Store = {
+  _id: string;
   name: string;
-  address: string;
   createdAt: string;
   updatedAt: string;
 };
 
-export type CreateTenantData = {
+export type CreateStoreData = {
   name: string;
-  address: string;
 };
 
 export type QueryParams = {
