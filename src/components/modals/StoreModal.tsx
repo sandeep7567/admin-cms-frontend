@@ -19,6 +19,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { onClose } from "@/redux/reducer/storeSlice";
+import { useCreateStoreMutation } from "@/redux/api/storeApiSlice";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -27,6 +28,7 @@ const formSchema = z.object({
 });
 
 export const StoreModal = () => {
+  const [createStore] = useCreateStoreMutation();
   const { isOpen } = useAppSelector((state) => state.store);
   const dispatch = useAppDispatch();
 
@@ -41,12 +43,13 @@ export const StoreModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     startTransition(() => {
-      try {
-        // api call to create store
-        console.log(values);
-      } catch (error) {
-        toast.error("Something went wrong!");
-      }
+      (async () => {
+        try {
+          await createStore(values);
+        } catch (error) {
+          toast.error("Something went wrong!");
+        }
+      })();
     });
   };
 
@@ -66,7 +69,9 @@ export const StoreModal = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>
+                      Name<span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isPending}
