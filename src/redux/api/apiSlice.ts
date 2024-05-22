@@ -5,7 +5,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND_URL,
   }),
-  tagTypes: ["Auth", "Product", "User", "Order"],
+  tagTypes: ["Auth", "Store", "Product", "User", "Order"],
   endpoints: (builder) => ({
     getUser: builder.query({
       query: () => ({
