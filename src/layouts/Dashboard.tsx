@@ -115,10 +115,8 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
-      console.log("object is logged out");
       await logout({}).unwrap();
       toast(`Logged out successfully`);
-      console.log("User logged out successfully");
     } catch (error) {
       console.error("Logout failed", error);
       toast(`Couldn't log out`);
