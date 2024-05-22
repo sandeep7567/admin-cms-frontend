@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import Auth from "./components/authentication/Auth";
 import SetupPage from "./pages/setup/SetupPage";
 import Setup from "./layouts/Setup";
+import ProductPage from "./pages/product/product";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
           {
             path: ":storeId",
             element: <HomePage />,
+          },
+          {
+            path: ":storeId/products",
+            element: <ProductPage />,
           },
         ],
       },
