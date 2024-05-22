@@ -4,7 +4,6 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 const Setup = () => {
   const { user } = useAppSelector((state) => state.auth);
   const location = useLocation();
-  console.log(user);
 
   if (user === null) {
     const redirect =

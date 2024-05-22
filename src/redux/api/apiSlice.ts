@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getUser, logout } from "../reducer/authSlice";
+import { LogoutRequest, LogoutResponse } from "@/types/api-types";
 
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
@@ -35,9 +36,10 @@ export const apiSlice = createApi({
         credentials: "include" as const,
       }),
     }),
-    logout: builder.mutation({
-      query: () => ({
+    logout: builder.mutation<LogoutResponse, LogoutRequest>({
+      query: (data) => ({
         url: "auth/logout",
+        body: data,
         method: "POST",
         credentials: "include" as const,
       }),

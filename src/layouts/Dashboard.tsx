@@ -64,6 +64,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { cn } from "@/lib/utils";
 import React, { useEffect } from "react";
 import { onClose } from "@/redux/reducer/storeSlice";
+import { useLogoutMutation } from "@/redux/api/apiSlice";
+import { toast } from "sonner";
 
 const groups = [
   {
@@ -108,6 +110,20 @@ const Dashboard = () => {
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(
     groups[0].teams[0]
   );
+
+  const [logout] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      console.log("object is logged out");
+      await logout({}).unwrap();
+      toast(`Logged out successfully`);
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Logout failed", error);
+      toast(`Couldn't log out`);
+    }
+  };
 
   useEffect(() => {
     if (user && user.storeId.length > 0) {
@@ -407,10 +423,12 @@ const Dashboard = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem>
+                {user.firstName + " " + user.lastName}
+              </DropdownMenuItem>
+              <DropdownMenuItem>{user?.email}</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
