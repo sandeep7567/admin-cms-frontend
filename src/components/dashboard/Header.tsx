@@ -1,21 +1,15 @@
-import React from "react";
 import { cn } from "@/lib/utils";
 import {
   CheckIcon,
   ChevronsUpDown,
   CircleUser,
-  Home,
-  LineChart,
+  LucideIcon,
   Menu,
-  Package,
-  Package2,
   PlusCircleIcon,
   Search,
-  ShoppingCart,
-  Users,
 } from "lucide-react";
+import React from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,7 +28,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Link } from "react-router-dom";
 
 import {
   Popover,
@@ -63,6 +56,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { User } from "@/types";
+import { NavLink } from "./Sidebar";
 
 const groups = [
   {
@@ -97,11 +91,19 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
+interface NavLinkProps {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  badgeCount?: number;
+  active: boolean;
+}
 interface HeaderProps {
   user: User;
   handleLogout: () => void;
   showNewTeamDialog: boolean;
   setShowNewTeamDialog: (show: boolean) => void;
+  navLinks: NavLinkProps[];
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -109,6 +111,7 @@ const Header: React.FC<HeaderProps> = ({
   handleLogout,
   showNewTeamDialog,
   setShowNewTeamDialog,
+  navLinks,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(
@@ -125,51 +128,16 @@ const Header: React.FC<HeaderProps> = ({
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
           <nav className="grid gap-2 text-lg font-medium">
-            <Link
-              to="#"
-              className="flex items-center gap-2 text-lg font-semibold"
-            >
-              <Package2 className="h-6 w-6" />
-              <span className="sr-only">Acme Inc</span>
-            </Link>
-            <Link
-              to="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <Home className="h-5 w-5" />
-              Dashboard
-            </Link>
-            <Link
-              to="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              Orders
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                6
-              </Badge>
-            </Link>
-            <Link
-              to="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <Package className="h-5 w-5" />
-              Products
-            </Link>
-            <Link
-              to="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <Users className="h-5 w-5" />
-              Customers
-            </Link>
-            <Link
-              to="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <LineChart className="h-5 w-5" />
-              Analytics
-            </Link>
+            {navLinks.map((link, index) => (
+              <NavLink
+                key={index}
+                to={link.to}
+                icon={link.icon}
+                label={link.label}
+                badgeCount={link.badgeCount}
+                active={link.active}
+              />
+            ))}
           </nav>
           <div className="mt-auto">
             <Card>

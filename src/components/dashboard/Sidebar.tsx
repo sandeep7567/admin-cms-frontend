@@ -1,60 +1,20 @@
-import { Link, useLocation } from "react-router-dom";
-import {
-  Home,
-  ShoppingCart,
-  Package,
-  Users,
-  LineChart,
-  Bell,
-  Package2,
-  LucideIcon,
-} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Bell, Package2, LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "../ui/button";
-import { User } from "@/types";
-
-interface SidebarProps {
-  user: User;
+interface NavLinkProps {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  badgeCount?: number;
+  active: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ user }) => {
-  const storeId = user.storeId[0];
-  const location = useLocation();
+interface SidebarProps {
+  navLinks: NavLinkProps[];
+}
 
-  const navLinks = [
-    {
-      to: `${storeId}`,
-      icon: Home,
-      label: "Dashboard",
-      active: location.pathname === `/${storeId}`,
-    },
-    {
-      to: `${storeId}/orders`,
-      icon: ShoppingCart,
-      label: "Orders",
-      badgeCount: 6,
-      active: location.pathname === `/${storeId}/orders`,
-    },
-    {
-      to: `${storeId}/products`,
-      icon: Package,
-      label: "Products",
-      active: location.pathname === `/${storeId}/products`,
-    },
-    {
-      to: `${storeId}/customers`,
-      icon: Users,
-      label: "Customers",
-      active: location.pathname === `/${storeId}/customers`,
-    },
-    {
-      to: `${storeId}/analytics`,
-      icon: LineChart,
-      label: "Analytics",
-      active: location.pathname === `/${storeId}/analytics`,
-    },
-  ];
-
+const Sidebar: React.FC<SidebarProps> = ({ navLinks }) => {
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -95,7 +55,7 @@ interface NavLinkProps {
   active: boolean;
 }
 
-const NavLink = ({
+export const NavLink = ({
   to,
   icon: Icon,
   label,

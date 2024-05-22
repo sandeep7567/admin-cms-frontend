@@ -6,11 +6,48 @@ import { toast } from "sonner";
 import Sidebar from "@/components/dashboard/Sidebar";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Header from "@/components/dashboard/Header";
+import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
 
 const Dashboard = () => {
   const { user } = useAppSelector((state) => state.auth);
   const location = useLocation();
   const dispatch = useAppDispatch();
+
+  const storeId = user && user.storeId[0];
+
+  const navLinks = [
+    {
+      to: `${storeId}`,
+      icon: Home,
+      label: "Dashboard",
+      active: location.pathname === `/${storeId}`,
+    },
+    {
+      to: `${storeId}/orders`,
+      icon: ShoppingCart,
+      label: "Orders",
+      badgeCount: 6,
+      active: location.pathname === `/${storeId}/orders`,
+    },
+    {
+      to: `${storeId}/products`,
+      icon: Package,
+      label: "Products",
+      active: location.pathname === `/${storeId}/products`,
+    },
+    {
+      to: `${storeId}/customers`,
+      icon: Users,
+      label: "Customers",
+      active: location.pathname === `/${storeId}/customers`,
+    },
+    {
+      to: `${storeId}/analytics`,
+      icon: LineChart,
+      label: "Analytics",
+      active: location.pathname === `/${storeId}/analytics`,
+    },
+  ];
 
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
@@ -44,13 +81,14 @@ const Dashboard = () => {
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[250px_1fr]">
-      <Sidebar user={user} />
+      <Sidebar navLinks={navLinks} />
       <div className="flex flex-col">
         <Header
           user={user}
           handleLogout={handleLogout}
           showNewTeamDialog={showNewTeamDialog}
           setShowNewTeamDialog={setShowNewTeamDialog}
+          navLinks={navLinks}
         />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Outlet />
