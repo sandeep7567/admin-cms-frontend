@@ -1,10 +1,9 @@
 import NoDataPage from "@/components/layout/NoDataPage";
-import ProductSheet from "@/components/sheet/ProductSheet";
 
 const ProductPage = () => {
   return (
     <>
-      <ProductSheet />
+      {/* <ProductSheet /> */}
       <NoDataPage
         btnLabel="Create Product"
         description="You have no products"
