@@ -95,3 +95,9 @@ export type ImageField = {
 };
 
 export type CreateProductData = Product & { image: ImageField };
+
+export type ProductDataApiRequest = {
+  storeId: string;
+  productId?: string;
+  formData: FormData;
+};

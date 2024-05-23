@@ -1,8 +1,10 @@
+import ProductForm from "@/components/form/product-form/ProductForm";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { onToggle } from "@/redux/reducer/productSlice";
-import { SheetForm } from "../ui/sheetForm";
+import { useParams } from "react-router-dom";
 import { z } from "zod";
-import ProductForm from "../form/product-form/ProductForm";
+import { SheetForm } from "../ui/sheetForm";
+import { useProductMutation } from "@/hooks/product/useProductMutate";
 
 const formProductSchema = z.object({
   name: z.string({ required_error: "name is required" }),
@@ -27,11 +29,14 @@ const formProductSchema = z.object({
 type FormProductT = z.infer<typeof formProductSchema>;
 
 const ProductSheet = () => {
+  const { mutateProduct } = useProductMutation();
   const { isOpen } = useAppSelector((state) => state.product);
   const dispatch = useAppDispatch();
 
+  const { storeId } = useParams();
+
   // 2. Define a submit handler.
-  const onSubmit = (formDataJson: FormProductT) => {
+  const onSubmit = async (formDataJson: FormProductT) => {
     // TODO: Convert formDataJson to a new FormData object
     const formData = new FormData();
 
@@ -40,13 +45,20 @@ const ProductSheet = () => {
     formData.append("archived", formDataJson.archived.toString());
     formData.append("featured", formDataJson.featured.toString());
     formDataJson.properties.forEach((property, index) => {
-      formData.append(`properties[${index}][name]`, property.name.toString());
-      formData.append(`properties[${index}][value]`, property.value.toString());
+      formData.append(`properties[${index}][name]`, property.name);
+      formData.append(`properties[${index}][value]`, property.value);
     });
 
-    formData.append("imageFile", formDataJson.imageFile);
+    if (formDataJson.imageFile) {
+      formData.append(`imageFile`, formDataJson.imageFile);
+    }
 
-    console.log(formDataJson);
+    await mutateProduct({
+      storeId: String(storeId),
+      formData,
+    });
+
+    console.log("formData", formData);
     // await register(values);
     // if (isRegisterSuccesss) {
     //   toast("Product created Success");
