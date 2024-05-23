@@ -1,5 +1,4 @@
 import {
-  FormControl,
   FormDescription,
   FormField,
   FormItem,
@@ -18,7 +17,7 @@ const PropertySection = () => {
   return (
     <div className="grid sm:grid-cols-2 gap-4 py-4">
       <div>
-        <h2>Add Properties</h2>
+        <h2 className="text-2xl font-bold">Add Properties</h2>
         <FormDescription>
           Create a customize property for a product
         </FormDescription>
@@ -30,14 +29,13 @@ const PropertySection = () => {
           name="properties"
           render={() => (
             <FormItem className="flex flex-col gap-2">
-              <FormControl>
-                {fields.map((_, index) => (
-                  <PropertyInput
-                    index={index}
-                    removeProperty={() => remove(index)}
-                  />
-                ))}
-              </FormControl>
+              {fields.map((field, index) => (
+                <PropertyInput
+                  key={field.id}
+                  index={index}
+                  removeProperty={() => remove(index)}
+                />
+              ))}
               <FormMessage />
             </FormItem>
           )}

@@ -7,7 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TrashIcon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -65,14 +65,16 @@ const PropertyInput: React.FC<PropertyInputProps> = ({
         )}
       />
 
-      <Button
-        type="button"
-        onClick={removeProperty}
-        variant={"destructive"}
-        size={"icon"}
-      >
-        <TrashIcon />
-      </Button>
+      {!!index && (
+        <Button
+          type="button"
+          onClick={removeProperty}
+          variant={"destructive"}
+          size={"icon"}
+        >
+          <Trash2Icon size={20} color="white" />
+        </Button>
+      )}
     </div>
   );
 };
