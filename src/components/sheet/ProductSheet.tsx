@@ -1,16 +1,8 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { onToggle } from "@/redux/reducer/productSlice";
-import { Button } from "../ui/button";
-import { Form } from "../ui/form";
-import { SheetFooter } from "../ui/sheet";
 import { SheetForm } from "../ui/sheetForm";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
-import DetailSection from "../form/product-form/DetailSection";
-import { Separator } from "@/components/ui/separator";
-import PropertySection from "../form/product-form/PropertySection";
-import ImageSection from "../form/product-form/ImageSection";
+import ProductForm from "../form/product-form/ProductForm";
 
 const formProductSchema = z.object({
   name: z.string({ required_error: "name is required" }),
@@ -32,25 +24,14 @@ const formProductSchema = z.object({
   imageFile: z.instanceof(File, { message: "Image is required" }),
 });
 
-type formProductT = z.infer<typeof formProductSchema>;
+type FormProductT = z.infer<typeof formProductSchema>;
 
 const ProductSheet = () => {
   const { isOpen } = useAppSelector((state) => state.product);
   const dispatch = useAppDispatch();
 
-  const form = useForm<formProductT>({
-    resolver: zodResolver(formProductSchema),
-    defaultValues: {
-      name: "",
-      price: 0,
-      archived: false,
-      featured: false,
-      properties: [{ name: "", value: "" }],
-    },
-  });
-
   // 2. Define a submit handler.
-  const onProductSubmit = (formDataJson: formProductT) => {
+  const onSubmit = (formDataJson: FormProductT) => {
     // TODO: Convert formDataJson to a new FormData object
     const formData = new FormData();
 
@@ -71,7 +52,6 @@ const ProductSheet = () => {
     //   toast("Product created Success");
     //   // close sheet
     // }
-    form.reset();
   };
 
   return (
@@ -83,24 +63,18 @@ const ProductSheet = () => {
       open={isOpen}
       onOpen={() => dispatch(onToggle())}
     >
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onProductSubmit)}
-          className="space-y-8 rounded-lg"
-        >
-          <DetailSection />
-          <Separator />
-          <PropertySection />
-          <Separator />
-          <ImageSection />
-
-          <SheetFooter>
-            <Button disabled={true} type="submit">
-              Save changes
-            </Button>
-          </SheetFooter>
-        </form>
-      </Form>
+      <ProductForm
+        onSubmit={onSubmit}
+        defaultValues={{
+          name: "",
+          price: 0,
+          archived: false,
+          featured: false,
+          properties: [{ name: "", value: "" }],
+        }}
+        disabled={false}
+        onDelete={() => {}}
+      />
     </SheetForm>
   );
 };
