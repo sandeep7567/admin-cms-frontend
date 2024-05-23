@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   FormControl,
   FormDescription,
@@ -6,10 +7,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ChangeEvent, useState } from "react";
 import { useFormContext } from "react-hook-form";
+
+function getImageData(event: ChangeEvent<HTMLInputElement>) {
+  // FileList is immutable, so we need to create a new one
+  const dataTransfer = new DataTransfer();
+
+  // Add newly uploaded images
+  Array.from(event.target.files!).forEach((image) =>
+    dataTransfer.items.add(image)
+  );
+
+  const files = dataTransfer.files;
+  const displayUrl = URL.createObjectURL(event.target.files![0]);
+
+  return { files, displayUrl };
+}
 
 const ImageSection = () => {
   const { control } = useFormContext();
+  const [preview, setPreview] = useState("");
 
   return (
     <div className="grid sm:grid-cols-2 gap-4 py-4">
@@ -21,20 +39,29 @@ const ImageSection = () => {
       </div>
 
       <div className="grid sm:grid-cols-1 items-center gap-4">
+        <Avatar className="w-24 h-24">
+          <AvatarImage src={preview} />
+          <AvatarFallback>
+            <div className="w-full h-full animate-pulse bg-gray-300" />
+          </AvatarFallback>
+        </Avatar>
         <FormField
           control={control}
           name="imageFile"
-          render={({ field }) => (
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          render={({ field: { onChange, value, ...rest } }) => (
             <FormItem className="flex flex-col gap-2">
               <FormControl>
                 <Input
-                  {...field}
                   type="file"
-                  id="imageFile"
+                  {...rest}
                   accept=".jpg, .jpeg, .png"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
+                  multiple={true}
+                  onChange={(event) => {
+                    const { files, displayUrl } = getImageData(event);
+                    setPreview(displayUrl);
+                    onChange(files ? files[0] : null);
+                  }}
                 />
               </FormControl>
               <FormMessage />
