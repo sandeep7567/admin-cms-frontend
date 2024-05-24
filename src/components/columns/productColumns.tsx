@@ -6,24 +6,22 @@ import { X, Check } from "lucide-react";
 // You can use a Zod schema here if you want.
 export type ProductColumn = {
   _id: string;
-  image: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  price: string;
-  isFeatured: boolean;
-  isArchived: boolean;
+  imageFile: string;
+  name: string;
+  price: number;
+  featured: boolean;
+  archived: boolean;
   createdAt: string;
 };
 
 export const ProductColumns: ColumnDef<ProductColumn>[] = [
   {
-    accessorKey: "image",
+    accessorKey: "imageFile",
     header: "Image",
     cell: ({ row }) => (
       <div className="w-full h-full flex items-center gap-2">
         <img
-          src={row.original.image}
+          src={row.original.imageFile}
           alt="image"
           width={400}
           height={400}
@@ -40,20 +38,11 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
     ),
   },
   {
-    accessorKey: "firstName" || "lastName",
+    accessorKey: "name",
     header: "Name",
     cell: ({ row }) => (
       <div className="flex items-center gap-2 text-xs font-medium">
-        {row.original.firstName.toUpperCase() + " " + row.original.lastName}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2 text-xs font-medium">
-        {row.original.email}
+        {row.original.name}
       </div>
     ),
   },
@@ -62,7 +51,7 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
     header: "Archived",
     cell: ({ row }) => (
       <div className="h-fit w-1/2 aspect-square flex justify-center items-center">
-        {row?.original?.isArchived ? (
+        {row?.original?.archived ? (
           <Check size={16} style={{ color: "green" }} />
         ) : (
           <X size={16} style={{ color: "red" }} />
@@ -75,7 +64,7 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
     header: "Featured",
     cell: ({ row }) => (
       <div className="h-fit w-1/2 aspect-square flex justify-center items-center">
-        {row?.original?.isFeatured ? (
+        {row?.original?.featured ? (
           <Check size={16} style={{ color: "green" }} />
         ) : (
           <X size={16} style={{ color: "red" }} />
@@ -108,6 +97,7 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
     id: "actions",
     cell: ({ row }) => {
       console.log(row);
+      <div>hi</div>;
       // return <ProductCellAction data={row.original} />;
     },
   },

@@ -1,29 +1,29 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getProducts } from "../../http/api";
-import { QueryParams } from "../../types";
+import { useGetProductsQuery } from "@/redux/api/productApiSlice";
 
-export const useFetchProducts = (queryParams: QueryParams) => {
+interface Query {
+  storeId: string;
+}
+
+export const useFetchProducts = (query: Query) => {
   const {
-    data: products,
-    isError,
-    isFetching,
-    error,
-    isSuccess,
-  } = useQuery({
-    queryKey: ["products", queryParams],
-    queryFn: async () => {
-      const filterParams = Object.entries(queryParams).filter(
-        ([, value]) => !!value
-      );
-
-      const queryString = new URLSearchParams(
-        filterParams as unknown as Record<string, string>
-      ).toString();
-
-      return getProducts(queryString).then((res) => res.data);
-    },
-    placeholderData: keepPreviousData,
+    data,
+    isSuccess: isProductsSuccess,
+    isError: isProductsError,
+    isFetching: isProductsFetching,
+    isLoading: isProductsLoading,
+    error: productsError,
+  } = useGetProductsQuery(query, {
+    pollingInterval: 0,
+    refetchOnMountOrArgChange: true,
+    skip: false,
   });
 
-  return { products, isError, isFetching, error, isSuccess };
+  return {
+    products: data ? data.products : [],
+    isProductsError,
+    productsError,
+    isProductsFetching,
+    isProductsLoading,
+    isProductsSuccess,
+  };
 };

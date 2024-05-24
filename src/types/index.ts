@@ -78,23 +78,30 @@ export type ProductAttribute = {
   value: string | boolean;
 };
 
-export type Product = {
-  _id: string;
+export interface PropertyI {
+  _id?: string;
   name: string;
-  description: string;
-  isPublish: boolean;
-  image: string;
-  priceConfiguration: PriceConfiguration;
-  attributes: ProductAttribute[];
-  category: Category;
+  value: string | number | boolean | string[] | number[];
+}
+
+export interface ProductI {
+  _id: string;
+  storeId: string;
+  name: string;
+  price: number;
+  archived: boolean;
+  featured: boolean;
+  properties: PropertyI[];
+  imageFile: string;
   createdAt: string;
-};
+  updatedAt: string;
+}
 
 export type ImageField = {
   file: File;
 };
 
-export type CreateProductData = Product & { image: ImageField };
+export type CreateProductData = ProductI & { image: ImageField };
 
 export type ProductDataApiRequest = {
   storeId: string;
