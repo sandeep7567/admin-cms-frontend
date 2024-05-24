@@ -6,41 +6,24 @@ import DetailSection from "./DetailSection";
 import ImageSection from "./ImageSection";
 import PropertySection from "./PropertySection";
 import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const formProductSchema = z.object({
-  name: z.string({ required_error: "name is required" }),
-  price: z.coerce
-    .number({
-      required_error: "Price is required",
-      invalid_type_error: "Price must be a number",
-    })
-    .positive()
-    .gte(0),
-  featured: z.boolean().default(false),
-  archived: z.boolean().default(false),
-  properties: z.array(
-    z.object({
-      name: z.string().min(1, "name is required"),
-      value: z.string().min(1, "value is required"),
-    })
-  ),
-  imageFile: z.instanceof(File, { message: "Image is required" }),
-});
-
-type FormProductT = z.infer<typeof formProductSchema>;
+import { Loader2, Trash } from "lucide-react";
+import { useEffect } from "react";
+import {
+  productFormSchema,
+  ProductFormType,
+} from "@/lib/schema/product-schema";
 
 interface ProductFormProps {
   id?: string;
-  onSubmit: (values: FormProductT) => void;
+  onSubmit: (values: ProductFormType) => void;
   defaultValues: Pick<
-    FormProductT,
+    ProductFormType,
     "name" | "archived" | "featured" | "price" | "properties"
   >;
   onDelete?: () => void;
   disabled?: boolean;
+  isSuccess?: boolean;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -49,19 +32,26 @@ const ProductForm: React.FC<ProductFormProps> = ({
   disabled,
   id,
   onDelete,
+  isSuccess,
 }) => {
-  const form = useForm<FormProductT>({
-    resolver: zodResolver(formProductSchema),
+  const form = useForm<ProductFormType>({
+    resolver: zodResolver(productFormSchema),
     defaultValues,
   });
 
-  const handleSubmit = (values: FormProductT) => {
+  const handleSubmit = (values: ProductFormType) => {
     onSubmit(values);
   };
 
   const handleDelete = () => {
     onDelete?.();
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      form.reset(defaultValues);
+    }
+  }, [isSuccess, defaultValues, form]);
 
   return (
     <Form {...form}>
@@ -77,6 +67,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
         <SheetFooter>
           <Button disabled={disabled} type="submit">
+            {disabled && <Loader2 size={18} className="animate-spin mr-2" />}
             {id ? "Save changes" : "Create product"}
           </Button>
           {!!id && (

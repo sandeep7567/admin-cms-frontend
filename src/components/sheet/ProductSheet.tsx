@@ -1,43 +1,19 @@
 import ProductForm from "@/components/form/product-form/ProductForm";
+import { useProductMutation } from "@/hooks/product/useProductMutate";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { ProductFormType } from "@/lib/schema/product-schema";
 import { onToggle } from "@/redux/reducer/productSlice";
 import { useParams } from "react-router-dom";
-import { z } from "zod";
 import { SheetForm } from "../ui/sheetForm";
-import { useProductMutation } from "@/hooks/product/useProductMutate";
-
-const formProductSchema = z.object({
-  name: z.string({ required_error: "name is required" }),
-  price: z.coerce
-    .number({
-      required_error: "Price is required",
-      invalid_type_error: "Price must be a number",
-    })
-    .positive()
-    .gte(0),
-  featured: z.boolean().default(false),
-  archived: z.boolean().default(false),
-  properties: z.array(
-    z.object({
-      name: z.string().min(1, "name is required"),
-      value: z.string().min(1, "value is required"),
-    })
-  ),
-  imageFile: z.instanceof(File, { message: "Image is required" }),
-});
-
-type FormProductT = z.infer<typeof formProductSchema>;
 
 const ProductSheet = () => {
-  const { mutateProduct } = useProductMutation();
+  const { mutateProduct, isLoading, isSuccess } = useProductMutation();
   const { isOpen } = useAppSelector((state) => state.product);
   const dispatch = useAppDispatch();
 
   const { storeId } = useParams();
 
-  // 2. Define a submit handler.
-  const onSubmit = async (formDataJson: FormProductT) => {
-    // TODO: Convert formDataJson to a new FormData object
+  const onSubmit = async (formDataJson: ProductFormType) => {
     const formData = new FormData();
 
     formData.append("name", formDataJson.name);
@@ -53,17 +29,16 @@ const ProductSheet = () => {
       formData.append(`imageFile`, formDataJson.imageFile);
     }
 
-    await mutateProduct({
+    const { data } = await mutateProduct({
       storeId: String(storeId),
       formData,
     });
 
-    console.log("formData", formData);
-    // await register(values);
-    // if (isRegisterSuccesss) {
-    //   toast("Product created Success");
-    //   // close sheet
-    // }
+    if (data) {
+      dispatch(onToggle());
+    }
+
+    console.log("response", data);
   };
 
   return (
@@ -84,8 +59,9 @@ const ProductSheet = () => {
           featured: false,
           properties: [{ name: "", value: "" }],
         }}
-        disabled={false}
+        disabled={isLoading}
         onDelete={() => {}}
+        isSuccess={isSuccess}
       />
     </SheetForm>
   );

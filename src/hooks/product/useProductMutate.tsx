@@ -3,6 +3,7 @@ import {
   useUpdateProductMutation,
 } from "@/redux/api/productApiSlice";
 import { ProductDataApiRequest } from "@/types";
+import { toast } from "sonner";
 
 export const useProductMutation = (productId?: string) => {
   const [createProduct, createState] = useCreateProductMutation();
@@ -13,16 +14,31 @@ export const useProductMutation = (productId?: string) => {
     formData,
   }: ProductDataApiRequest) => {
     if (productId) {
-      return updateProduct({ storeId, productId, formData });
+      return await updateProduct({ storeId, productId, formData });
     } else {
-      return createProduct({ storeId, formData });
+      return await createProduct({ storeId, formData });
     }
   };
 
   const state = productId ? updateState : createState;
+  const { isSuccess, error, isError } = state;
 
-  return {
-    mutateProduct,
-    ...state,
-  };
+  if (isSuccess) {
+    toast.success(`Product created`);
+  }
+
+  if (isError && error) {
+    if ("status" in error) {
+      // Assuming it's a FetchBaseQueryError
+      const errMsg =
+        "error" in error ? error.error : JSON.stringify(error.data);
+      console.log("error", errMsg);
+
+      toast.error(errMsg || "Product not created!");
+    } else {
+      toast.error("Something went wrong2!");
+    }
+  }
+
+  return { mutateProduct, ...state };
 };
