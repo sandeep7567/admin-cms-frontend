@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import Actions from "@/pages/product/components/actions";
 
 export type ProductColumn = {
   _id: string;
@@ -128,9 +129,6 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      return <div>...</div>;
-      // return <ProductCellAction data={row.original} />;
-    },
+    cell: ({ row }) => <Actions id={row.original._id} />,
   },
 ];
