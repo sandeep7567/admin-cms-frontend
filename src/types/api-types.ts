@@ -7,7 +7,8 @@ export type MessageResponse = {
 export type LogoutResponse = object;
 export type LogoutRequest = object;
 
-export type ProductRespone = { products: ProductI[] };
+export type ProductsResponse = { products: ProductI[] };
+export type ProductResponse = { product: ProductI };
 
 export type ProductBulkDeleteResponse = {
   ids: string[];
