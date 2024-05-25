@@ -1,7 +1,7 @@
 interface NoDataPageProps {
-  title: string;
-  description: string;
-  info: string;
+  title?: string;
+  description?: string;
+  info?: string;
   children: React.ReactNode;
 }
 
