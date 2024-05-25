@@ -5,10 +5,6 @@ export const useBulkDeleteProducts = () => {
   const [deleteBulkProducts, { isError, isLoading, isSuccess, error }] =
     useBulkDeleteProductsMutation();
 
-  // const mutateProduct = async ({ storeId, ids }: ProductBulkDeleteRequest) => {
-  //   return await deleteBulkProducts({ storeId, ids });
-  // };
-
   if (isSuccess) {
     toast.success(`Products deleted`);
   }

@@ -129,8 +129,7 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      console.log(row);
-      <div>hi</div>;
+      return <div>...</div>;
       // return <ProductCellAction data={row.original} />;
     },
   },

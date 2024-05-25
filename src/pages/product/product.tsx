@@ -48,20 +48,6 @@ const ProductPage = () => {
     );
   }
 
-  // const propertiesMergeProducts = (products as ProductI[]).map((item) => {
-  //   const mergedProduct = { ...item };
-
-  //   item.properties.forEach((prop: PropertyI) => {
-  //     mergedProduct[`${prop.name}`] = Array.isArray(prop.value)
-  //       ? prop.value.join(",")
-  //       : prop.value;
-  //   });
-
-  //   return mergedProduct;
-  // });
-
-  // console.log(propertiesMergeProducts[0]);
-
   const formattedProducts: ProductColumn[] = products.length
     ? products?.map((item) => ({
         ...item,
@@ -77,8 +63,6 @@ const ProductPage = () => {
         createdAt: format(item.createdAt, "dd MMM yyyy"),
       }))
     : [];
-
-  console.log(formattedProducts[0]);
 
   return (
     <>
@@ -114,7 +98,10 @@ const ProductPage = () => {
               data={formattedProducts}
               onDelete={async (row) => {
                 const ids = row.map((r) => r.original._id);
-                await deleteBulkProducts({ storeId: storeId!, ids });
+                await deleteBulkProducts({
+                  storeId: storeId!,
+                  productsIds: { ids },
+                });
               }}
               disabled={isDisabled}
             />

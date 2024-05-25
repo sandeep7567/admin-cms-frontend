@@ -1,4 +1,4 @@
-import { ProductBulkDeleteRequest, ProductDataApiRequest } from "@/types";
+import { DeleteBulkProductRequest, ProductDataApiRequest } from "@/types";
 import {
   MessageResponse,
   ProductBulkDeleteResponse,
@@ -37,12 +37,12 @@ export const productApiSlice = apiSlice.injectEndpoints({
     }),
     bulkDeleteProducts: builder.mutation<
       ProductBulkDeleteResponse,
-      ProductBulkDeleteRequest
+      DeleteBulkProductRequest
     >({
-      query: ({ storeId, ids }) => ({
+      query: ({ storeId, productsIds }) => ({
         url: `product/${storeId}/bulk-delete`,
         method: "POST",
-        body: ids,
+        body: productsIds,
         credentials: "include",
       }),
       invalidatesTags: ["Product"],

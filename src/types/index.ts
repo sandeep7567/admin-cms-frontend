@@ -109,4 +109,16 @@ export type ProductDataApiRequest = {
   formData: FormData;
 };
 
-export type ProductBulkDeleteRequest = { storeId: string; ids: string[] };
+export type ProductIds = {
+  ids: string[];
+};
+
+// export type ProductBulkDeleteRequest = { storeId: string; ids: string[] };
+export type DeleteBulkProductRequest = {
+  storeId: string;
+  productsIds: {
+    ids: string[];
+  };
+};
+
+// { storeId, {ids: [ids, ]} }
