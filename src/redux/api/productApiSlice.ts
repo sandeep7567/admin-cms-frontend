@@ -1,5 +1,9 @@
-import { ProductDataApiRequest } from "@/types";
-import { MessageResponse, ProductRespone } from "@/types/api-types";
+import { ProductBulkDeleteRequest, ProductDataApiRequest } from "@/types";
+import {
+  MessageResponse,
+  ProductBulkDeleteResponse,
+  ProductRespone,
+} from "@/types/api-types";
 import { apiSlice } from "./apiSlice";
 
 export const productApiSlice = apiSlice.injectEndpoints({
@@ -31,6 +35,18 @@ export const productApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Product"],
       keepUnusedDataFor: 60,
     }),
+    bulkDeleteProducts: builder.mutation<
+      ProductBulkDeleteResponse,
+      ProductBulkDeleteRequest
+    >({
+      query: ({ storeId, ids }) => ({
+        url: `product/${storeId}/bulk-delete`,
+        method: "POST",
+        body: ids,
+        credentials: "include",
+      }),
+      invalidatesTags: ["Product"],
+    }),
   }),
 });
 
@@ -38,4 +54,5 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useGetProductsQuery,
+  useBulkDeleteProductsMutation,
 } = productApiSlice;

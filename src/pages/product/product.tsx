@@ -5,37 +5,66 @@ import {
 import NoDataPage from "@/components/layout/NoDataPage";
 import { DataTable } from "@/components/ui/data-table";
 import { OpenSheetButton } from "@/components/ui/open-sheet-button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useBulkDeleteProducts } from "@/hooks/product/useBulkDelete";
 import { useFetchProducts } from "@/hooks/product/useFetchProducts";
 import { useAppDispatch } from "@/hooks/redux";
 import { onToggle } from "@/redux/reducer/productSlice";
+import { format } from "date-fns";
 import { Loader } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { format } from "date-fns";
 
 const ProductPage = () => {
   const { storeId } = useParams();
-  const { products, isProductsLoading, isProductsFetching, isProductsSuccess } =
-    useFetchProducts({
-      storeId: String(storeId),
-    });
+  const {
+    products,
+    isProductsLoading,
+    isProductsFetching,
+    isProductsSuccess,
+    isProductsError,
+  } = useFetchProducts({
+    storeId: String(storeId),
+  });
+  const { deleteBulkProducts, isLoading } = useBulkDeleteProducts();
+
+  const isDisabled = isProductsLoading || isLoading;
 
   const dispatch = useAppDispatch();
 
-  if (isProductsLoading || isProductsFetching) {
+  if (isProductsLoading || isProductsFetching || isProductsError) {
     return (
       <div className="relative h-screen w-full flex bg-gray-200/50">
         <NoDataPage description="" info="" title="">
           <Loader
             size={80}
-            className="animate-spin flex items-center text-primary/40 justify-center"
+            className="animate-spin flex size-6 items-center text-primary/40 justify-center"
           />
+          <h3 className="text-base font-medium text-muted-foreground tracking-tight">
+            {isProductsError && "Refresh the page"}
+          </h3>
+          <Skeleton className="h-8 w-48" />
         </NoDataPage>
       </div>
     );
   }
 
+  // const propertiesMergeProducts = (products as ProductI[]).map((item) => {
+  //   const mergedProduct = { ...item };
+
+  //   item.properties.forEach((prop: PropertyI) => {
+  //     mergedProduct[`${prop.name}`] = Array.isArray(prop.value)
+  //       ? prop.value.join(",")
+  //       : prop.value;
+  //   });
+
+  //   return mergedProduct;
+  // });
+
+  // console.log(propertiesMergeProducts[0]);
+
   const formattedProducts: ProductColumn[] = products.length
     ? products?.map((item) => ({
+        ...item,
         _id: item._id,
         name: item.name,
         featured: item.featured,
@@ -48,6 +77,8 @@ const ProductPage = () => {
         createdAt: format(item.createdAt, "dd MMM yyyy"),
       }))
     : [];
+
+  console.log(formattedProducts[0]);
 
   return (
     <>
@@ -81,6 +112,11 @@ const ProductPage = () => {
               searchKey="name"
               columns={ProductColumns}
               data={formattedProducts}
+              onDelete={async (row) => {
+                const ids = row.map((r) => r.original._id);
+                await deleteBulkProducts({ storeId: storeId!, ids });
+              }}
+              disabled={isDisabled}
             />
           </div>
         </>

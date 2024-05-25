@@ -81,7 +81,7 @@ export type ProductAttribute = {
 export interface PropertyI {
   _id?: string;
   name: string;
-  value: string | number | boolean | string[] | number[];
+  value: string | string[];
 }
 
 export interface ProductI {
@@ -108,3 +108,5 @@ export type ProductDataApiRequest = {
   productId?: string;
   formData: FormData;
 };
+
+export type ProductBulkDeleteRequest = { storeId: string; ids: string[] };

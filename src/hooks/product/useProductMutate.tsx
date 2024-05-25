@@ -32,7 +32,6 @@ export const useProductMutation = (productId?: string) => {
       // Assuming it's a FetchBaseQueryError
       const errMsg =
         "error" in error ? error.error : JSON.stringify(error.data);
-      console.log("error", errMsg);
 
       toast.error(errMsg || "Product not created!");
     } else {

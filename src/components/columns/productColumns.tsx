@@ -1,9 +1,9 @@
+import { PropertyI } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, X, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 
-import { X, Check } from "lucide-react";
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type ProductColumn = {
   _id: string;
   imageFile: string;
@@ -12,9 +12,32 @@ export type ProductColumn = {
   featured: boolean;
   archived: boolean;
   createdAt: string;
+  properties: PropertyI[];
 };
 
 export const ProductColumns: ColumnDef<ProductColumn>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "imageFile",
     header: "Image",
@@ -39,7 +62,17 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <div className="flex items-center gap-2 text-xs font-medium">
         {row.original.name}
