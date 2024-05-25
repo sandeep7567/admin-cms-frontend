@@ -7,7 +7,7 @@ const Setup = () => {
 
   if (user === null) {
     const redirect =
-      new URLSearchParams(location.search).get("redirect") || "/";
+      new URLSearchParams(location.search).get("redirect") || "/auth/login";
 
     return <Navigate to={redirect} replace />;
   } else if (user.storeId.length > 0) {
