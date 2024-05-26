@@ -97,6 +97,25 @@ export interface ProductI {
   updatedAt: string;
 }
 
+export enum Roles {
+  ADMIN = "admin",
+  CUSTOMER = "customer",
+}
+
+export interface UserI {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isEmailVerified: boolean;
+  password: string;
+  role: Roles;
+  isPublish: boolean;
+  storeId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type ImageField = {
   file: File;
 };
