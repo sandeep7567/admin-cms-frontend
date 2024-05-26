@@ -36,7 +36,7 @@ const initializeApp = async () => {
         await store.dispatch(
           apiSlice.endpoints.logout.initiate(
             {},
-            { fixedCacheKey: "Auth", track: true }
+            { fixedCacheKey: "auth-logout", track: true }
           )
         );
       }

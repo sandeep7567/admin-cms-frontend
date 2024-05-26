@@ -1,9 +1,4 @@
-import {
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormDescription, FormField, FormItem } from "@/components/ui/form";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import PropertyInput from "./PropertyInput";
@@ -36,7 +31,6 @@ const PropertySection = () => {
                   removeProperty={() => remove(index)}
                 />
               ))}
-              <FormMessage />
             </FormItem>
           )}
         />
