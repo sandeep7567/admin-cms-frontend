@@ -114,11 +114,15 @@ export type ProductIds = {
 };
 
 // export type ProductBulkDeleteRequest = { storeId: string; ids: string[] };
-export type DeleteBulkProductRequest = {
+export type DeleteBulkProductsRequest = {
   storeId: string;
   productsIds: {
     ids: string[];
   };
+};
+export type DeleteProductRequest = {
+  storeId: string;
+  productId: string;
 };
 
 // { storeId, {ids: [ids, ]} }
