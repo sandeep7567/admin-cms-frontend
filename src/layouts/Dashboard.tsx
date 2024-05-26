@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import Sidebar from "@/components/dashboard/Sidebar";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Header from "@/components/dashboard/Header";
-import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
+import { Home, Package, ShoppingCart, Users } from "lucide-react";
 
 const Dashboard = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -23,6 +23,12 @@ const Dashboard = () => {
       active: location.pathname === `/${storeId}`,
     },
     {
+      to: `${storeId}/products`,
+      icon: Package,
+      label: "Products",
+      active: location.pathname === `/${storeId}/products`,
+    },
+    {
       to: `${storeId}/orders`,
       icon: ShoppingCart,
       label: "Orders",
@@ -30,28 +36,16 @@ const Dashboard = () => {
       active: location.pathname === `/${storeId}/orders`,
     },
     {
-      to: `${storeId}/products`,
-      icon: Package,
-      label: "Products",
-      active: location.pathname === `/${storeId}/products`,
-    },
-    {
       to: `${storeId}/customers`,
       icon: Users,
       label: "Customers",
       active: location.pathname === `/${storeId}/customers`,
     },
-    {
-      to: `${storeId}/analytics`,
-      icon: LineChart,
-      label: "Analytics",
-      active: location.pathname === `/${storeId}/analytics`,
-    },
   ];
 
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
-  const [logout] = useLogoutMutation();
+  const [logout, { isLoading }] = useLogoutMutation();
 
   const handleLogout = async () => {
     try {
@@ -89,6 +83,7 @@ const Dashboard = () => {
           showNewTeamDialog={showNewTeamDialog}
           setShowNewTeamDialog={setShowNewTeamDialog}
           navLinks={navLinks}
+          disabled={isLoading}
         />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Outlet />
