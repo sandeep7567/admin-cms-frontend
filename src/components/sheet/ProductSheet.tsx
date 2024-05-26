@@ -1,5 +1,4 @@
 import ProductForm from "@/components/form/product-form/ProductForm";
-import { useProductMutation } from "@/hooks/product/useProductMutate";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { ProductFormType } from "@/lib/schema/product-schema";
 import { onEditToggle, onToggle } from "@/redux/reducer/productSlice";
@@ -9,12 +8,24 @@ import { useFetchProduct } from "@/hooks/product/useFetchProduct";
 import NoDataPage from "../layout/NoDataPage";
 import { Loader } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
+import {
+  useCreateProductMutation,
+  useDeleteProductMutation,
+  useUpdateProductMutation,
+} from "@/redux/api/productApiSlice";
+import { toast } from "sonner";
+import { useConfirm } from "@/hooks/ui/useConfirm";
 
 const ProductSheet = () => {
+  const { storeId } = useParams();
+  const [ConfirmDialog, confirm] = useConfirm(
+    "Are you sure?",
+    "You are about to perform a delete."
+  );
+
   const { isOpen, id } = useAppSelector((state) => state.product);
   const dispatch = useAppDispatch();
 
-  const { mutateProduct, isLoading, isSuccess } = useProductMutation();
   const {
     isProductError,
     isProductFetching,
@@ -22,8 +33,16 @@ const ProductSheet = () => {
     isProductSuccess,
     product,
   } = useFetchProduct(id);
+  const [createProduct, { isLoading, isSuccess: isCreateSuccess }] =
+    useCreateProductMutation();
+  const [updateProduct, { isLoading: isUpdating, isSuccess: isUpdateSuccess }] =
+    useUpdateProductMutation();
 
-  const { storeId } = useParams();
+  const [deleteProduct, { isLoading: isDeleting, isSuccess: isDeleteSuccess }] =
+    useDeleteProductMutation();
+
+  const isDisabled = isLoading || isUpdating || isDeleting;
+  const isSuccess = isCreateSuccess || isUpdateSuccess || isDeleteSuccess;
 
   const onSubmit = async (formDataJson: ProductFormType) => {
     const formData = new FormData();
@@ -41,23 +60,43 @@ const ProductSheet = () => {
       formData.append(`imageFile`, formDataJson.imageFile);
     }
 
-    const { data } = await mutateProduct({
-      storeId: String(storeId),
-      formData,
-    });
+    if (!id) {
+      const { data, error } = await createProduct({
+        storeId: String(storeId),
+        formData,
+      });
 
-    if (data) {
+      if (data) {
+        toast.success(`Product created`);
+      }
+
+      if (error) {
+        toast.error(`Product created failed`);
+      }
+
       dispatch(onToggle());
-    }
+    } else {
+      const { data, error } = await updateProduct({
+        storeId: String(storeId),
+        productId: id,
+        formData,
+      });
 
-    console.log("response", data);
+      if (data) {
+        toast.success(`Product updated`);
+      }
+
+      if (error) {
+        toast.error(`Product updated failed`);
+      }
+
+      dispatch(onEditToggle({ id: undefined }));
+    }
   };
 
-  if (
-    isProductFetching ||
-    isProductLoading ||
-    (typeof id !== "undefined" && id !== product?._id)
-  ) {
+  const isVerfiyId = typeof id !== "undefined" && id !== product?._id;
+
+  if (isProductFetching || isProductLoading || isVerfiyId) {
     return (
       <div className="relative h-screen w-full flex bg-gray-200/50">
         <NoDataPage description="" info="" title="">
@@ -74,6 +113,25 @@ const ProductSheet = () => {
     );
   }
 
+  const onDelete = async () => {
+    const ok = await confirm();
+    if (ok) {
+      if (typeof id !== "undefined" && id === product?._id && storeId) {
+        const { data, error } = await deleteProduct({ productId: id, storeId });
+
+        if (data) {
+          toast.success(`Product deleted`);
+        }
+
+        if (error) {
+          toast.error(`Product deletion failed`);
+        }
+
+        dispatch(onEditToggle({ id: undefined }));
+      }
+    }
+  };
+
   const defaultValues =
     isProductSuccess && product && id === product?._id
       ? {
@@ -87,6 +145,7 @@ const ProductSheet = () => {
               ? prop.value.join(",")
               : prop.value,
           })),
+          imagePreview: product?.imageFile,
         }
       : {
           name: "",
@@ -94,45 +153,51 @@ const ProductSheet = () => {
           archived: false,
           featured: false,
           properties: [{ name: "", value: "" }],
+          imagePreview: "",
         };
 
   return (
-    <SheetForm
-      title={id ? "Edit Product" : "Create Product"}
-      description={
-        id
-          ? "Edit a existing Product"
-          : "Create a new Product to sell on the store"
-      }
-      side="product"
-      openBtnText="Open"
-      open={isOpen}
-      onOpen={() => dispatch(id ? onEditToggle({ id: undefined }) : onToggle())}
-    >
-      {isProductLoading && id !== product?._id ? (
-        <div className="relative h-screen w-full flex bg-gray-200/50">
-          <NoDataPage>
-            <Loader
-              size={80}
-              className="animate-spin flex size-6 items-center text-primary/40 justify-center"
-            />
-            <h3 className="text-base font-medium text-muted-foreground tracking-tight">
-              {isProductError && "Refresh the page"}
-            </h3>
-            <Skeleton className="h-8 w-48" />
-          </NoDataPage>
-        </div>
-      ) : (
-        <ProductForm
-          id={id}
-          onSubmit={onSubmit}
-          defaultValues={defaultValues}
-          disabled={isLoading}
-          onDelete={() => {}}
-          isSuccess={isSuccess}
-        />
-      )}
-    </SheetForm>
+    <>
+      <ConfirmDialog />
+      <SheetForm
+        title={id ? "Edit Product" : "Create Product"}
+        description={
+          id
+            ? "Edit a existing Product"
+            : "Create a new Product to sell on the store"
+        }
+        side="product"
+        openBtnText="Open"
+        open={isOpen}
+        onOpen={() =>
+          dispatch(id ? onEditToggle({ id: undefined }) : onToggle())
+        }
+      >
+        {isProductLoading && id !== product?._id ? (
+          <div className="relative h-screen w-full flex bg-gray-200/50">
+            <NoDataPage>
+              <Loader
+                size={80}
+                className="animate-spin flex size-6 items-center text-primary/40 justify-center"
+              />
+              <h3 className="text-base font-medium text-muted-foreground tracking-tight">
+                {isProductError && "Refresh the page"}
+              </h3>
+              <Skeleton className="h-8 w-48" />
+            </NoDataPage>
+          </div>
+        ) : (
+          <ProductForm
+            id={id}
+            onSubmit={onSubmit}
+            defaultValues={defaultValues}
+            disabled={isDisabled}
+            onDelete={onDelete}
+            isSuccess={isSuccess}
+          />
+        )}
+      </SheetForm>
+    </>
   );
 };
 

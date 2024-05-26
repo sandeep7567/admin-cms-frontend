@@ -19,7 +19,13 @@ interface ProductFormProps {
   onSubmit: (values: ProductFormType) => void;
   defaultValues: Pick<
     ProductFormType,
-    "name" | "archived" | "featured" | "price" | "properties"
+    | "name"
+    | "archived"
+    | "featured"
+    | "price"
+    | "properties"
+    | "imagePreview"
+    | "imageFile"
   >;
   onDelete?: () => void;
   disabled?: boolean;
@@ -72,6 +78,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           </Button>
           {!!id && (
             <Button disabled={disabled} onClick={handleDelete} type="button">
+              {disabled && <Loader2 size={18} className="animate-spin mr-2" />}
               <Trash className="size-4 mr-2" />
               Delete
             </Button>

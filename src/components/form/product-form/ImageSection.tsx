@@ -26,7 +26,8 @@ function getImageData(event: ChangeEvent<HTMLInputElement>) {
 }
 
 const ImageSection = () => {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
+  const imagePreview = watch("imagePreview");
   const [preview, setPreview] = useState("");
 
   return (
@@ -39,12 +40,21 @@ const ImageSection = () => {
       </div>
 
       <div className="grid sm:grid-cols-1 items-center gap-4">
-        <Avatar className="w-24 h-24">
-          <AvatarImage src={preview} />
-          <AvatarFallback>
-            <div className="w-full h-full animate-pulse bg-gray-300" />
-          </AvatarFallback>
-        </Avatar>
+        {!preview && imagePreview ? (
+          <Avatar className="w-24 h-24">
+            <AvatarImage src={imagePreview} alt="image" />
+            <AvatarFallback>
+              <div className="w-full h-full animate-pulse bg-gray-300" />
+            </AvatarFallback>
+          </Avatar>
+        ) : (
+          <Avatar className="w-24 h-24">
+            <AvatarImage src={preview} alt="image" />
+            <AvatarFallback>
+              <div className="w-full h-full animate-pulse bg-gray-300" />
+            </AvatarFallback>
+          </Avatar>
+        )}
         <FormField
           control={control}
           name="imageFile"
