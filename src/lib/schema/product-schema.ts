@@ -14,12 +14,6 @@ export const productFormSchema = z
       .gte(0),
     featured: z.boolean().default(false),
     archived: z.boolean().default(false),
-    // properties: z.array(
-    //   z.object({
-    //     name: z.string().min(1, "name is required"),
-    //     value: z.string().min(1, "value is required"),
-    //   })
-    // ),
     properties: z
       .array(
         z.object({
