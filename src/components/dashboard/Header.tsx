@@ -74,10 +74,6 @@ const Header: React.FC<HeaderProps> = ({
   navLinks,
   disabled,
 }) => {
-  // const [open, setOpen] = React.useState(false);
-  // const [selectedTeam, setSelectedTeam] = React.useState<Team>(
-  //   groups[0].teams[0]
-  // );
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
