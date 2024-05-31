@@ -1,14 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
-import Dashboard from "./layouts/Dashboard";
-import NonAuth from "./layouts/NonAuth";
-import Root from "./layouts/Root";
-import HomePage from "./pages/HomePage";
-import Auth from "./components/authentication/Auth";
-import SetupPage from "./pages/setup/SetupPage";
-import Setup from "./layouts/Setup";
-import ProductPage from "./pages/product/product";
-import CustomerPage from "./pages/customer/customer";
-import OrderPage from "./pages/order/order";
+import Dashboard from "@/layouts/Dashboard";
+import NonAuth from "@/layouts/NonAuth";
+import Root from "@/layouts/Root";
+import Auth from "@/components/authentication/Auth";
+import SetupPage from "@/pages/setup/SetupPage";
+import Setup from "@/layouts/Setup";
+import ProductPage from "@/pages/product/product";
+import CustomerPage from "@/pages/customer/customer";
+import OrderPage from "@/pages/order/order";
+import DashboardPage from "@/pages/dashboard/dashboard";
 
 export const router = createBrowserRouter([
   {
@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: ":storeId",
-            element: <HomePage />,
+            element: <DashboardPage />,
           },
           {
             path: ":storeId/products",

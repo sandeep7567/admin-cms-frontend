@@ -20,7 +20,7 @@ const CustomerPage = () => {
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: Count.ZERO,
-    pageSize: Count.PAGE_SIZE,
+    pageSize: Count.CUSTOMER_PAGE_SIZE,
   });
 
   const {
@@ -59,7 +59,7 @@ const CustomerPage = () => {
         createdAt: format(item?.createdAt, "dd MMM yyyy"),
         storeName:
           item && item.role === "admin"
-            ? item?.storeDetails?.[0].name
+            ? item?.storeDetails?.[0]?.name
             : undefined,
       }))
     : [];

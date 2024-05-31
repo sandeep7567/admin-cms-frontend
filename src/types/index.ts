@@ -8,8 +8,9 @@ export enum Roles {
 export enum Count {
   ZERO = 0,
   PAGE_INDEX = 1,
-  PAGE_SIZE = 4,
-  ORDER_PAGE_SIZE = 3,
+  PAGE_SIZE = 3,
+  CUSTOMER_PAGE_SIZE = 7,
+  ORDER_PAGE_SIZE = 2,
   PRICE_CONVERSION = 100,
 }
 
@@ -203,6 +204,7 @@ export interface Order {
   storeId: string;
   userId: string;
   purchaseAt: string;
+  totalAmount: number;
   status: OrderStatus;
   createdAt: string;
   updatedAt: string;
