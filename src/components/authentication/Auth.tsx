@@ -58,10 +58,12 @@ const Auth: React.FC<AuthProps> = ({
   formType,
 }) => {
   const navigate = useNavigate();
-  const [register, { isSuccess: isRegisterSuccesss }] =
-    useRegistrationMutation();
+  const [
+    register,
+    { isSuccess: isRegisterSuccesss, isError: isRegisterError },
+  ] = useRegistrationMutation();
 
-  const [login, { isSuccess }] = useLoginMutation();
+  const [login, { isSuccess, isError }] = useLoginMutation();
 
   // 1. Define your form.
   const loginForm = useForm<z.infer<typeof formLoginSchema>>({
@@ -93,14 +95,22 @@ const Auth: React.FC<AuthProps> = ({
       toast("Register Success");
       navigate(`${redirect}`);
     }
+
+    if (isRegisterError) {
+      toast.error("Password must be 8 characters long, try -->" + "12345678");
+    }
   }
 
   async function onLoginSubmit(values: z.infer<typeof formLoginSchema>) {
     await login(values);
 
     if (isSuccess) {
-      toast("Login Success");
+      toast.success("Login Success");
       navigate(`${redirect}`);
+    }
+
+    if (isError) {
+      toast.error("Password must be 8 characters long, try -->" + "12345678");
     }
   }
 
@@ -160,11 +170,27 @@ const Auth: React.FC<AuthProps> = ({
                 {btnTitle}
               </Link>
             </div>
+
+            {/* Demo Account Info */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="mb-4 flex items-center">
+                <h2 className="flex-1 text-lg font-semibold text-pretty">
+                  Email
+                </h2>
+                <p className="text-sm text-gray-800 font-bold">demo@demo.com</p>
+              </div>
+              <div className="border-t border-gray-200 pt-4 flex items-center">
+                <h2 className="grow text-lg font-semibold text-pretty">
+                  Password
+                </h2>
+                <p className="text-sm text-gray-800 font-bold">12345678</p>
+              </div>
+            </div>
           </div>
         </div>
         <div className="hidden bg-muted lg:block">
           <img
-            src="/placeholder.svg"
+            src="/placeholder.jpg"
             alt="Image"
             width="1920"
             height="1080"
