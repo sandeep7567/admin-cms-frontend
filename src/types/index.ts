@@ -1,3 +1,18 @@
+import { DELIVERY_STATUS } from "@/constants";
+
+export enum Roles {
+  ADMIN = "admin",
+  CUSTOMER = "customer",
+}
+
+export enum Count {
+  ZERO = 0,
+  PAGE_INDEX = 1,
+  PAGE_SIZE = 4,
+  ORDER_PAGE_SIZE = 3,
+  PRICE_CONVERSION = 100,
+}
+
 export type LoginCredentials = {
   email: string;
   password: string;
@@ -7,6 +22,7 @@ export type RegisterCredentials = {
   lastName: string;
   email: string;
   password: string;
+  role: Roles;
 };
 
 export type User = {
@@ -16,6 +32,7 @@ export type User = {
   lastName: string;
   createdAt: string;
   storeId: string[];
+  tokenExpireAt: number;
 };
 
 export type CreateUserData = {
@@ -97,9 +114,12 @@ export interface ProductI {
   updatedAt: string;
 }
 
-export enum Roles {
-  ADMIN = "admin",
-  CUSTOMER = "customer",
+export interface StoreDetails {
+  _id: string;
+  userId: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface UserI {
@@ -112,6 +132,7 @@ export interface UserI {
   role: Roles;
   isPublish: boolean;
   storeId?: string;
+  storeDetails?: StoreDetails[];
   createdAt: string;
   updatedAt: string;
 }
@@ -133,9 +154,9 @@ export type ProductIds = {
 };
 
 // export type ProductBulkDeleteRequest = { storeId: string; ids: string[] };
-export type DeleteBulkProductsRequest = {
+export type DeleteBulkRequest = {
   storeId: string;
-  productsIds: {
+  deleteIds: {
     ids: string[];
   };
 };
@@ -144,4 +165,45 @@ export type DeleteProductRequest = {
   productId: string;
 };
 
-// { storeId, {ids: [ids, ]} }
+export type DeleteOrderRequest = {
+  storeId: string;
+  orderId: string;
+};
+
+export type OrderStatus = keyof typeof DELIVERY_STATUS;
+
+type OrderProductData = {
+  productId: string;
+  productName: string;
+  price: number;
+  qty: number;
+};
+
+export type OrdersDataApiRequest = {
+  productInfo: OrderProductData[];
+  orderId: string;
+  storeId: string | null;
+  userId: string | undefined;
+  totalAmount: number;
+  purchaseAt?: Date;
+  status?: OrderStatus;
+};
+
+interface ProductInfo {
+  productId: string;
+  productName: string;
+  qty: number;
+  price: number;
+  _id: string;
+}
+export interface Order {
+  _id: string;
+  productInfo: ProductInfo[];
+  orderId: string;
+  storeId: string;
+  userId: string;
+  purchaseAt: string;
+  status: OrderStatus;
+  createdAt: string;
+  updatedAt: string;
+}

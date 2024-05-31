@@ -11,6 +11,7 @@ export type CustomerColumn = {
   isEmailVerified: boolean;
   password: string;
   role: Roles;
+  storeName?: string;
   isPublish: boolean;
   createdAt: string;
 };
@@ -55,6 +56,10 @@ export const CustomerColumns: ColumnDef<CustomerColumn>[] = [
   {
     accessorKey: "role",
     header: "Role",
+  },
+  {
+    accessorKey: "storeName",
+    header: "Store",
   },
   {
     accessorKey: "createdAt",

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import imgUrl from "./placeholder.jpg";
 
 const LoginPage = () => {
   return (
@@ -45,7 +46,7 @@ const LoginPage = () => {
         </div>
         <div className="hidden bg-muted lg:block">
           <img
-            src="/placeholder.svg"
+            src={imgUrl}
             alt="Image"
             width="1920"
             height="1080"

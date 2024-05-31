@@ -32,7 +32,7 @@ const Dashboard = () => {
       to: `${storeId}/orders`,
       icon: ShoppingCart,
       label: "Orders",
-      badgeCount: 6,
+      // badgeCount: 6,
       active: location.pathname === `/${storeId}/orders`,
     },
     {

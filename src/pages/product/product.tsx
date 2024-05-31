@@ -6,30 +6,50 @@ import NoDataPage from "@/components/layout/NoDataPage";
 import { DataTable } from "@/components/ui/data-table";
 import { OpenSheetButton } from "@/components/ui/open-sheet-button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useBulkDeleteProducts } from "@/hooks/product/useBulkDelete";
+import { useBulkDeleteProducts } from "@/hooks/product/useBulkDeleteProducts";
 import { useFetchProducts } from "@/hooks/product/useFetchProducts";
 import { useAppDispatch } from "@/hooks/redux";
 import { onToggle } from "@/redux/reducer/productSlice";
+import { Count } from "@/types";
+import { PaginationState } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const ProductPage = () => {
   const { storeId } = useParams();
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: Count.ZERO,
+    pageSize: Count.PAGE_SIZE,
+  });
+
   const {
     products,
+    pageInfo: { pageCount, pageIndex, totalDocs },
     isProductsLoading,
     isProductsFetching,
     isProductsSuccess,
     isProductsError,
   } = useFetchProducts({
     storeId: String(storeId),
+    pageIndex: pagination.pageIndex + Count.PAGE_INDEX,
+    pageSize: pagination.pageSize,
   });
+
   const { deleteBulkProducts, isLoading } = useBulkDeleteProducts();
 
   const isDisabled = isProductsLoading || isLoading;
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!products.length && pageIndex > 1) {
+      console.log("object");
+      window.location.href = `/products`;
+    }
+  }, [pageIndex, products, storeId]);
 
   if (isProductsLoading || isProductsFetching || isProductsError) {
     return (
@@ -56,9 +76,6 @@ const ProductPage = () => {
         featured: item.featured,
         archived: item.archived,
         price: item.price / 100,
-        // category: item.category.name,
-        // size: item.size.name,
-        // color: item.color.value,
         imageFile: item.imageFile,
         createdAt: format(item.createdAt, "dd MMM yyyy"),
       }))
@@ -100,10 +117,15 @@ const ProductPage = () => {
                 const ids = row.map((r) => r.original._id);
                 await deleteBulkProducts({
                   storeId: storeId!,
-                  productsIds: { ids },
+                  deleteIds: { ids },
                 });
               }}
+              pagination={pagination}
+              setPagination={setPagination}
               disabled={isDisabled}
+              pageCount={pageCount}
+              currentPage={pageIndex}
+              totalDocs={totalDocs}
             />
           </div>
         </>

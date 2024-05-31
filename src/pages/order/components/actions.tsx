@@ -1,4 +1,4 @@
-import { ProductColumn } from "@/components/columns/productColumns";
+import { OrderColumn } from "@/components/columns/orderColumns";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,44 +6,42 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAppDispatch } from "@/hooks/redux";
 import { useConfirm } from "@/hooks/ui/useConfirm";
-import { useDeleteProductMutation } from "@/redux/api/productApiSlice";
-import { onEditToggle } from "@/redux/reducer/productSlice";
+import { useDeleteOrderMutation } from "@/redux/api/orderApiSlice";
 import { Table } from "@tanstack/react-table";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { MoreHorizontal, Trash } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 interface ActionsProps {
   id: string;
-  table: Table<ProductColumn>;
+  table: Table<OrderColumn>;
 }
 
 export const Actions = ({ id, table }: ActionsProps) => {
   const { storeId } = useParams();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const [ConfirmDialog, confirm] = useConfirm(
     "Are you sure?",
     "You are about to perform a delete."
   );
 
-  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
+  const [deleteOrder, { isLoading: isDeleting }] = useDeleteOrderMutation();
 
   const onDelete = async () => {
     const ok = await confirm();
 
     if (ok && storeId) {
-      const { data, error } = await deleteProduct({ productId: id, storeId });
+      const { data, error } = await deleteOrder({ orderId: id, storeId });
 
       if (data) {
-        toast.success("Product deleted");
+        toast.success("Order deleted");
         table.reset();
         table.firstPage();
       }
 
       if (error) {
-        toast.error("Product deleted failed");
+        toast.error("Order deleted failed");
       }
     }
   };
@@ -58,14 +56,14 @@ export const Actions = ({ id, table }: ActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             disabled={isDeleting}
             onClick={() => dispatch(onEditToggle({ id }))}
             className="cursor-pointer"
           >
             <Edit className="size-4 mr-2" />
             Edit
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem
             disabled={isDeleting}
             onClick={onDelete}

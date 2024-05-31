@@ -9,19 +9,32 @@ import { useFetchUsers } from "@/hooks/user/useFetchUsers";
 import { Loader } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
+import { Count } from "@/types";
+import { PaginationState } from "@tanstack/react-table";
+import { useState } from "react";
 
 const CustomerPage = () => {
   const { storeId } = useParams();
 
   const id = storeId ? storeId : "";
 
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: Count.ZERO,
+    pageSize: Count.PAGE_SIZE,
+  });
+
   const {
     users,
+    userPageInfo: { pageCount, pageIndex, totalDocs },
     isUsersSuccess,
     isUsersError,
     isUsersFetching,
     isUsersLoading,
-  } = useFetchUsers({ storeId: id });
+  } = useFetchUsers({
+    storeId: id,
+    pageIndex: pagination.pageIndex + Count.PAGE_INDEX,
+    pageSize: pagination.pageSize,
+  });
 
   if (isUsersLoading || isUsersFetching || isUsersError) {
     return (
@@ -44,6 +57,10 @@ const CustomerPage = () => {
     ? users?.map((item) => ({
         ...item,
         createdAt: format(item?.createdAt, "dd MMM yyyy"),
+        storeName:
+          item && item.role === "admin"
+            ? item?.storeDetails?.[0].name
+            : undefined,
       }))
     : [];
 
@@ -64,6 +81,11 @@ const CustomerPage = () => {
               data={formattedUsers}
               onDelete={() => {}}
               disabled={false}
+              pagination={pagination}
+              setPagination={setPagination}
+              pageCount={pageCount}
+              currentPage={pageIndex}
+              totalDocs={totalDocs}
             />
           </div>
         </>

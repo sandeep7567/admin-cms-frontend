@@ -8,6 +8,7 @@ import SetupPage from "./pages/setup/SetupPage";
 import Setup from "./layouts/Setup";
 import ProductPage from "./pages/product/product";
 import CustomerPage from "./pages/customer/customer";
+import OrderPage from "./pages/order/order";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
           {
             path: ":storeId/customers",
             element: <CustomerPage />,
+          },
+          {
+            path: ":storeId/orders",
+            element: <OrderPage />,
           },
         ],
       },

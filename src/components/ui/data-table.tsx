@@ -32,6 +32,19 @@ interface DataTableProps<TData, TValue> {
   searchKey: string;
   onDelete: (row: Row<TData>[]) => void;
   disabled?: boolean;
+  pagination?: {
+    pageIndex: number;
+    pageSize: number;
+  };
+  setPagination?: React.Dispatch<
+    React.SetStateAction<{
+      pageIndex: number;
+      pageSize: number;
+    }>
+  >;
+  pageCount: number;
+  currentPage: number;
+  totalDocs: number;
 }
 
 export function DataTable<TData, TValue>({
@@ -40,6 +53,11 @@ export function DataTable<TData, TValue>({
   searchKey,
   onDelete,
   disabled,
+  pagination,
+  setPagination,
+  pageCount,
+  currentPage,
+  totalDocs,
 }: DataTableProps<TData, TValue>) {
   const [ConfirmDialog, confirm] = useConfirm(
     "Are you sure?",
@@ -56,11 +74,15 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    manualPagination: true,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    pageCount: pageCount,
     state: {
+      pagination,
       sorting,
       columnFilters,
       rowSelection,
@@ -90,6 +112,8 @@ export function DataTable<TData, TValue>({
               if (ok) {
                 onDelete(table.getFilteredSelectedRowModel().rows);
                 table.resetRowSelection();
+                table.reset();
+                table.firstPage();
               }
             }}
           >
@@ -153,20 +177,25 @@ export function DataTable<TData, TValue>({
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-
+        <div className="flex-1 text-sm text-muted-foreground">
+          total docs: {totalDocs}
+        </div>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          onClick={() => table.previousPage()}
         >
           Previous
         </Button>
+        <div className="text-muted-foreground">
+          {currentPage}/{pageCount}
+        </div>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          onClick={() => table.nextPage()}
         >
           Next
         </Button>

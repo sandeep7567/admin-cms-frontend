@@ -110,25 +110,12 @@ export const ProductColumns: ColumnDef<ProductColumn>[] = [
     accessorKey: "price",
     header: "Price",
   },
-  // {
-  //   accessorKey: "color",
-  //   header: "Color",
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center gap-2">
-  //       {/* {row.original.color} */}
-  //       <div
-  //         className="h-6 w-6 rounded-full border"
-  //         style={{ backgroundColor: row.original.color }}
-  //       />
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "createdAt",
     header: "Date",
   },
   {
     id: "actions",
-    cell: ({ row }) => <Actions id={row.original._id} />,
+    cell: ({ row, table }) => <Actions id={row.original._id} table={table} />,
   },
 ];

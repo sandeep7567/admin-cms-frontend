@@ -1,11 +1,11 @@
 import {
-  DeleteBulkProductsRequest,
+  DeleteBulkRequest,
   DeleteProductRequest,
   ProductDataApiRequest,
 } from "@/types";
 import {
+  BulkDeleteResponse,
   MessageResponse,
-  ProductBulkDeleteResponse,
   ProductResponse,
   ProductsResponse,
 } from "@/types/api-types";
@@ -31,11 +31,15 @@ export const productApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Product"],
     }),
-    getProducts: builder.query<ProductsResponse, { storeId: string }>({
-      query: ({ storeId }) => ({
+    getProducts: builder.query<
+      ProductsResponse,
+      { storeId: string; pageIndex: number; pageSize: number }
+    >({
+      query: ({ storeId, ...params }) => ({
         url: `product/${storeId}/products`,
         method: "GET",
         credentials: "include" as const,
+        params,
       }),
       providesTags: ["Product"],
     }),
@@ -47,18 +51,17 @@ export const productApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["Product"],
     }),
-    bulkDeleteProducts: builder.mutation<
-      ProductBulkDeleteResponse,
-      DeleteBulkProductsRequest
-    >({
-      query: ({ storeId, productsIds }) => ({
-        url: `product/${storeId}/bulk-delete`,
-        method: "POST",
-        body: productsIds,
-        credentials: "include",
-      }),
-      invalidatesTags: ["Product"],
-    }),
+    bulkDeleteProducts: builder.mutation<BulkDeleteResponse, DeleteBulkRequest>(
+      {
+        query: ({ storeId, deleteIds }) => ({
+          url: `product/${storeId}/bulk-delete`,
+          method: "POST",
+          body: deleteIds,
+          credentials: "include",
+        }),
+        invalidatesTags: ["Product"],
+      }
+    ),
     deleteProduct: builder.mutation<MessageResponse, DeleteProductRequest>({
       query: ({ storeId, productId }) => ({
         url: `product/${storeId}/${productId}`,

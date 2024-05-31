@@ -12,6 +12,7 @@ import {
   useRegistrationMutation,
 } from "@/redux/api/authApiSlice";
 import { toast } from "sonner";
+import { Roles } from "@/types";
 
 interface AuthProps {
   title: string;
@@ -85,7 +86,8 @@ const Auth: React.FC<AuthProps> = ({
 
   // 2. Define a submit handler.
   async function onRegisterSubmit(values: z.infer<typeof formRegisterSchema>) {
-    await register(values);
+    const registerFormData = { ...values, role: Roles.ADMIN };
+    await register(registerFormData);
 
     if (isRegisterSuccesss) {
       toast("Register Success");
