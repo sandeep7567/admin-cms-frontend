@@ -14,25 +14,21 @@ export const baseQueryWithReauth = async (
   api: BaseQueryApi,
   extraOptions: object
 ) => {
-  try {
-    let result = await baseQuery(args, api, extraOptions);
+  let result = await baseQuery(args, api, extraOptions);
 
-    if (result.error && result.error.status === 401) {
-      // Attempt to refresh the token
-      const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
+  if (result.error && result.error.status === 401) {
+    // Attempt to refresh the token
+    const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
 
-      if (refreshResult.data) {
-        // Retry the original request
-        result = await baseQuery(args, api, extraOptions);
-      } else if (refreshResult.error && refreshResult.error.status === 401) {
-        await baseQuery("/auth/logout", api, extraOptions);
-      } else {
-        await baseQuery("/auth/logout", api, extraOptions);
-      }
+    if (refreshResult.data) {
+      // Retry the original request
+      result = await baseQuery(args, api, extraOptions);
+    } else if (refreshResult.error && refreshResult.error.status === 401) {
+      await baseQuery("/auth/logout", api, extraOptions);
+    } else {
+      await baseQuery("/auth/logout", api, extraOptions);
     }
-
-    return result;
-  } catch (error) {
-    console.error(error);
   }
+
+  return result;
 };

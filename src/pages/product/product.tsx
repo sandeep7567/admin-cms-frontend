@@ -14,7 +14,7 @@ import { Count } from "@/types";
 import { PaginationState } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 const ProductPage = () => {
@@ -43,13 +43,6 @@ const ProductPage = () => {
   const isDisabled = isProductsLoading || isLoading;
 
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (!products.length && pageIndex > 1) {
-      console.log("object");
-      window.location.href = `/products`;
-    }
-  }, [pageIndex, products, storeId]);
 
   if (isProductsLoading || isProductsFetching || isProductsError) {
     return (
