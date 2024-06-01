@@ -9,8 +9,8 @@ export enum Count {
   ZERO = 0,
   PAGE_INDEX = 1,
   PAGE_SIZE = 3,
-  CUSTOMER_PAGE_SIZE = 7,
-  ORDER_PAGE_SIZE = 2,
+  CUSTOMER_PAGE_SIZE = 6,
+  ORDER_PAGE_SIZE = 5,
   PRICE_CONVERSION = 100,
 }
 
@@ -192,19 +192,23 @@ export type OrdersDataApiRequest = {
 
 interface ProductInfo {
   productId: string;
-  productName: string;
+  name: string;
+  imageFile: string;
+  selectedProperty: Record<string, string>;
   qty: number;
   price: number;
   _id: string;
 }
 export interface Order {
   _id: string;
-  productInfo: ProductInfo[];
-  orderId: string;
-  storeId: string;
+  orderItems: ProductInfo[];
   userId: string;
+  storeId: string;
   purchaseAt: string;
   totalAmount: number;
+  address: string;
+  totalQty: number;
+  userInfo: Pick<UserI, "firstName" | "lastName" | "email">;
   status: OrderStatus;
   createdAt: string;
   updatedAt: string;
