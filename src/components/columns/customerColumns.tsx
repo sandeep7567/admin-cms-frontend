@@ -19,6 +19,7 @@ export type CustomerColumn = {
 export const CustomerColumns: ColumnDef<CustomerColumn>[] = [
   {
     accessorKey: "firstName",
+    accessorFn: (formData) => `${formData.firstName} ${formData.lastName}`,
     header: "Full Name",
     cell: ({ row }) => (
       <div className="flex items-center gap-2 text-xs font-medium">
