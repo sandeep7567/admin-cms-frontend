@@ -13,6 +13,8 @@ import {
 } from "@/redux/api/authApiSlice";
 import { toast } from "sonner";
 import { Roles } from "@/types";
+import { Loader } from "../ui/loader";
+import { useGetUserQuery } from "@/redux/api/apiSlice";
 
 interface AuthProps {
   title: string;
@@ -58,11 +60,13 @@ const Auth: React.FC<AuthProps> = ({
   formType,
 }) => {
   const navigate = useNavigate();
+
+  const { isLoading: isSelfLoading, isFetching: isSelfFetching } =
+    useGetUserQuery(undefined, {});
   const [
     register,
     { isSuccess: isRegisterSuccesss, isError: isRegisterError },
   ] = useRegistrationMutation();
-
   const [login, { isSuccess, isError }] = useLoginMutation();
 
   // 1. Define your form.
@@ -112,6 +116,12 @@ const Auth: React.FC<AuthProps> = ({
     if (isError) {
       toast.error("Password must be 8 characters long, try -->" + "12345678");
     }
+  }
+
+  const isDisabled = isSelfLoading || isSelfFetching;
+
+  if (isDisabled) {
+    return <Loader />;
   }
 
   if (mode === "model") {
