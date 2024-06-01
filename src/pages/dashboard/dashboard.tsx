@@ -6,6 +6,7 @@ import { Overview } from "./components/overview";
 import { useParams } from "react-router-dom";
 import { useGetOrdersQuery } from "@/redux/api/orderApiSlice";
 import { useEffect, useState } from "react";
+import { PRICE_CONVERSION } from "@/constants";
 
 export interface GraphData {
   name: string;
@@ -60,7 +61,7 @@ const DahboardPage = () => {
 
   const paidOrders = data?.orders.map((order) => ({
     createdAt: new Date(order.createdAt).getMonth(),
-    totalAmount: order.totalAmount / 100,
+    totalAmount: order.totalAmount / PRICE_CONVERSION,
   }));
 
   paidOrders?.forEach((order) => {
@@ -82,7 +83,7 @@ const DahboardPage = () => {
   }, [isSuccess, isError, refetch, paidOrders]);
 
   return (
-    <div className="flex-col">
+    <div className="flex-col -mt-6">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="">
           <h2 className="text-3xl font-bold tracking-tighter">Dashboard</h2>

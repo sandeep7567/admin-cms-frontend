@@ -1,14 +1,13 @@
-import { OrderColumn, OrderColumns } from "@/components/columns/orderColumns";
+import { OrderColumns } from "@/components/columns/orderColumns";
 import NoDataPage from "@/components/layout/NoDataPage";
 import { DataTable } from "@/components/ui/data-table";
+import { Loader } from "@/components/ui/loader";
 import { OpenSheetButton } from "@/components/ui/open-sheet-button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useFetchOrders } from "@/hooks/order/useFetchOrders";
 import { useBulkDeleteOrders } from "@/hooks/order/useBulkDelete";
+import { useFetchOrders } from "@/hooks/order/useFetchOrders";
 import { Count } from "@/types";
 import { PaginationState } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { Loader } from "lucide-react";
+
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -38,34 +37,8 @@ const OrderPage = () => {
   const isDisabled = isOdersLoading || isLoading;
 
   if (isOdersLoading || isOdersFetching || isOdersError) {
-    return (
-      <div className="relative h-screen w-full flex bg-gray-200/50">
-        <NoDataPage description="" info="" title="">
-          <Loader
-            size={80}
-            className="animate-spin flex size-6 items-center text-primary/40 justify-center"
-          />
-          <h3 className="text-base font-medium text-muted-foreground tracking-tight">
-            {isOdersError && "Refresh the page"}
-          </h3>
-          <Skeleton className="h-8 w-48" />
-        </NoDataPage>
-      </div>
-    );
+    return <Loader />;
   }
-
-  const formattedOrders: OrderColumn[] = orders.flatMap((order) =>
-    order.productInfo.map((product) => ({
-      _id: order?._id,
-      name: product.productName,
-      qty: product.qty,
-      price: product.price / product.qty,
-      totalAmount: product.price,
-      referenceId: order.orderId,
-      status: order.status,
-      purchaseAt: format(order.purchaseAt, "dd MMM yyyy"),
-    }))
-  );
 
   return (
     <>
@@ -87,9 +60,9 @@ const OrderPage = () => {
 
           <div className="container mx-auto">
             <DataTable
-              searchKey="name"
+              searchKey="userInfo"
               columns={OrderColumns}
-              data={formattedOrders}
+              data={orders}
               onDelete={async (row) => {
                 const ids = row.map((r) => r.original._id);
                 await deleteBulkOrders({

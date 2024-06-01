@@ -23,7 +23,7 @@ export const useFetchOrders = (query: Query) => {
     orders: data ? data.orders : [],
     orderPageInfo: data
       ? {
-          totalDocs: data.totalDocs ? data.totalDocs * 2 : data.totalDocs,
+          totalDocs: data.totalDocs,
           pageIndex: data.pageIndex,
           pageSize: data.pageSize,
           pageCount: data.pageCount,
