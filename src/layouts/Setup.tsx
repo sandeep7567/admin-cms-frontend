@@ -11,7 +11,11 @@ const Setup = () => {
 
     return <Navigate to={redirect} replace />;
   } else if (user.storeId.length > 0) {
-    return <Navigate to={`/${user.storeId[0]}`} replace />;
+    const storeIdRedirect = user?.storeId.includes(location.pathname)
+      ? `${location.pathname}`
+      : `/${user.storeId[0]}`;
+
+    return <Navigate to={storeIdRedirect} replace />;
   }
 
   return <Outlet />;

@@ -4,7 +4,7 @@ import SheetProvider from "@/providers/SheetProvider";
 import { Outlet } from "react-router-dom";
 
 const Root = () => {
-  usePreventDevTools();
+  // usePreventDevTools();
   return (
     <div>
       <ModalProvider />

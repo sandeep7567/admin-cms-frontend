@@ -1,19 +1,21 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import React, { useEffect } from "react";
-import { onClose } from "@/redux/reducer/storeSlice";
-import { useLogoutMutation } from "@/redux/api/apiSlice";
-import { toast } from "sonner";
-import Sidebar from "@/components/dashboard/Sidebar";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Header from "@/components/dashboard/Header";
+import Sidebar from "@/components/dashboard/Sidebar";
+import { Loader } from "@/components/ui/loader";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { useFetchStores } from "@/hooks/store/useFetchStores";
+import { useLogoutMutation } from "@/redux/api/apiSlice";
+import { onClose } from "@/redux/reducer/storeSlice";
 import { Home, Package, ShoppingCart, Users } from "lucide-react";
+import React, { useEffect } from "react";
+import { Navigate, Outlet, useLocation, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const { user } = useAppSelector((state) => state.auth);
   const location = useLocation();
   const dispatch = useAppDispatch();
 
-  const storeId = user && user.storeId[0];
+  const { storeId } = useParams<{ storeId: string }>();
 
   const navLinks = [
     {
@@ -45,6 +47,9 @@ const Dashboard = () => {
 
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
+  const { stores, isStoresLoading, isStoresError } = useFetchStores({
+    userId: user?._id as string,
+  });
   const [logout, { isLoading }] = useLogoutMutation();
 
   const handleLogout = async () => {
@@ -69,8 +74,12 @@ const Dashboard = () => {
     );
   }
 
-  if (user && !user.storeId?.length) {
-    return <Navigate to={`/`} replace />;
+  if (isStoresLoading) {
+    return <Loader />;
+  }
+
+  if (isStoresError) {
+    return <Loader />;
   }
 
   return (
@@ -84,6 +93,7 @@ const Dashboard = () => {
           setShowNewTeamDialog={setShowNewTeamDialog}
           navLinks={navLinks}
           disabled={isLoading}
+          stores={stores}
         />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Outlet />
