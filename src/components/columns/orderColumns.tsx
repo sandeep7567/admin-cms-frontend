@@ -1,22 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Actions from "@/pages/order/components/actions";
-import { OrderStatus } from "@/types";
+import { Order } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 import { ArrowUpDown } from "lucide-react";
 
-export type OrderColumn = {
-  _id: string;
-  name: string;
-  qty: number;
-  price: number;
-  totalAmount: number;
-  referenceId: string;
-  status: OrderStatus;
-  purchaseAt: string;
-};
-
-export const OrderColumns: ColumnDef<OrderColumn>[] = [
+export const OrderColumns: ColumnDef<Order>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -40,7 +30,9 @@ export const OrderColumns: ColumnDef<OrderColumn>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "userInfo",
+    accessorFn: (formData) =>
+      `${formData.userInfo.firstName} ${formData.userInfo.lastName}`,
     header: ({ column }) => {
       return (
         <Button
@@ -48,33 +40,33 @@ export const OrderColumns: ColumnDef<OrderColumn>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className=""
         >
-          Name
+          Full Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="ml-4">{row.original.name}</div>,
-  },
-  {
-    accessorKey: "referenceId",
-    header: "Reference Id",
-    cell: ({ row }) => <div className="ml-2">{row.original.referenceId}</div>,
-  },
-  {
-    accessorKey: "price",
-    header: "Price",
     cell: ({ row }) => (
-      <div className="flex items-center ml-2 gap-2 text-xs font-medium">
-        {row.original.price / 100}
-      </div>
+      <div className="ml-4">{`${row.original.userInfo.firstName} ${row.original.userInfo.lastName}`}</div>
     ),
   },
   {
-    accessorKey: "qty",
+    accessorKey: "address",
+    header: "Address",
+    cell: ({ row }) => <div className="ml-2">{row.original.address}</div>,
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => (
+      <div className="ml-2">{row.original.userInfo.email}</div>
+    ),
+  },
+  {
+    accessorKey: "totalQty",
     header: "Qty",
     cell: ({ row }) => (
       <div className="flex items-center ml-2 gap-2 text-xs font-medium">
-        {row.original.qty}
+        {row.original.totalQty}
       </div>
     ),
   },
@@ -94,6 +86,9 @@ export const OrderColumns: ColumnDef<OrderColumn>[] = [
   {
     accessorKey: "purchaseAt",
     header: "Purchase At",
+    cell: ({ row }) => (
+      <div>{format(row.original.purchaseAt, "dd MMM yyyy")}</div>
+    ),
   },
   {
     id: "actions",
