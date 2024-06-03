@@ -1,4 +1,3 @@
-import { OrderColumn } from "@/components/columns/orderColumns";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useConfirm } from "@/hooks/ui/useConfirm";
 import { useDeleteOrderMutation } from "@/redux/api/orderApiSlice";
+import { Order } from "@/types";
 import { Table } from "@tanstack/react-table";
 import { MoreHorizontal, Trash } from "lucide-react";
 import { useParams } from "react-router-dom";
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 interface ActionsProps {
   id: string;
-  table: Table<OrderColumn>;
+  table: Table<Order>;
 }
 
 export const Actions = ({ id, table }: ActionsProps) => {
